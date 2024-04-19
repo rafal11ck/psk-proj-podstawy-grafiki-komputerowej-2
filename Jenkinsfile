@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'archlinux'
-            //args '-v /var/jenkins_home/workspace/psk-proj-podstawy-grafiki-komputerowej-2/build:/var/jenkins_home/workspace/psk-proj-podstawy-grafiki-komputerowej-2/build'
+            args '-v ${WORKSPACE}/build:${WORKSPACE}/build'
         }
     }
     stages{
