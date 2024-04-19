@@ -8,7 +8,7 @@ pipeline {
     stages{
         stage('install dependencies'){
             steps{
-                sh 'pacman -Sy --noconfirm cmake base-devel doxygen graphviz git glew sfml glm stb'
+                sh 'pacman -Sy --noconfirm cmake base-devel doxygen graphviz git glew sfml glm stb openssh'
             }
         }
         stage('fetch submodules'){
