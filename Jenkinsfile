@@ -13,7 +13,7 @@ pipeline {
         }
         stage('fetch submodules'){
             steps{
-                sh 'git submodule update --init --recursive'
+                sh 'git submodule update --recursive --remote'
             }
         }
         stage('Configure CMake project'){
