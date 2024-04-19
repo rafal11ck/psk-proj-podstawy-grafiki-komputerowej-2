@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Configure CMake project'){
             steps{
-                sh 'cmake -B build/'
+                sh 'cmake -B build/ -S src'
             }
         }
         stage('Compile'){
