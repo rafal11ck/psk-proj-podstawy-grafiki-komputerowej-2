@@ -6,9 +6,18 @@ pipeline {
         }
     }
     stages{
-        stage('Install dempendencies'){
-            steps{
-                sh 'pacman -Sy --noconfirm cmake base-devel doxygen graphviz git glew sfml glm stb'
+        stage('setup'){
+            parallel{
+                stage('install dependencies'){
+                    steps{
+                        sh 'pacman -Sy --noconfirm cmake base-devel doxygen graphviz git glew sfml glm stb'
+                    }
+                }
+                stage('fetch submodules'){
+                    steps{
+                        sh 'git submodule update --recursive --remote'
+                    }
+                }
             }
         }
         stage('Configure CMake project'){
