@@ -7,7 +7,7 @@ void Brick::draw(Shader &shader) {
   m_model.draw(shader);
 }
 
-Brick::Brick() { std::cout << "Cor"; };
+Brick::Brick() { LOGTRACEN; };
 
 Shape &Brick::getModel() { return m_model; };
 

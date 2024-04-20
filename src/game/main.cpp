@@ -11,7 +11,7 @@ int main() {
   light->setDiffuse(.4f, .4f, .4f);
   engine.addLight(light);
 
-  auto glevel{std::make_unique<GameLevel>(GameLevel{})};
+  auto glevel{std::make_unique<GameLevel>(GameLevel{1, 1})};
   engine.addDrawable(glevel.get());
 
   engine.setWireframeMode(true);
