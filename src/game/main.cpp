@@ -1,4 +1,10 @@
 #include "engine.hpp"
 #include <iostream>
 
-int main() { std::cout << "Hi"; }
+Engine &engine{Engine::getInstance()};
+
+int main() {
+  std::cout << "Hi";
+
+  engine.loop();
+}
