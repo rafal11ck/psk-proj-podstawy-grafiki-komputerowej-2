@@ -17,10 +17,14 @@ public:
   ~GameLevel();
 
   /**
-   * @brief Update brick sizes and postions.
-   *
+   * @brief Set brick's sizes (scale).
    */
   void scaleBricks();
+
+  /**
+   * @brief Set brick's postions.
+   */
+  void setPostions();
 
   virtual void draw(Shader &shader) override;
 
@@ -36,9 +40,9 @@ protected:
   static float s_borderPaddingTop;
 
   /**
-   * @brief How muchg space on screen can bricks take.
+   * @brief How muchg space on screen brick takes.
    */
-  static float s_bricksScreenSpaceHeight;
+  static float s_brickHeight;
 
   /**
    * @brief How many columns are in row.
@@ -49,8 +53,15 @@ protected:
    */
   static int s_rowCount;
 
+  /**
+   *
+   */
+
 private:
   std::vector<std::vector<Brick>> m_bricks;
+
+  int m_rowCount;
+  int m_columnCount;
 
   /**
    * @brief Compute width of single brick

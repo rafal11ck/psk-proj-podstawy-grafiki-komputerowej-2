@@ -6,7 +6,7 @@ FetchContent_Declare(
   GIT_TAG main)
 FetchContent_MakeAvailable(engine)
 
-add_executable(main game.cpp gameLevel.cpp main.cpp brick.cpp)
+add_executable(main gameLevel.cpp main.cpp brick.cpp)
 
 target_include_directories(main PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 

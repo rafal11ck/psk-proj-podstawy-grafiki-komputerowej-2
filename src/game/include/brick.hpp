@@ -17,6 +17,7 @@ class Brick : public Drawable {
 
 public:
   Brick();
+  ~Brick();
 
   Brick(const Brick &) = delete;
   Brick(Brick &&) = default;

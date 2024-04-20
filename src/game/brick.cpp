@@ -8,4 +8,7 @@ void Brick::draw(Shader &shader) {
 }
 
 Brick::Brick() { std::cout << "Cor"; };
+
 Shape &Brick::getModel() { return m_model; };
+
+Brick::~Brick(){};
