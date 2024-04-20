@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Compile'){
             steps{
-                sh 'cmake --build build/ -j'
+                sh 'cmake --build build/ -j $(nproc -ignore 1)'
             }
         }
     }
