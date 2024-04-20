@@ -1,2 +1,13 @@
-add_executable(main main.cpp)
+include(FetchContent)
+
+FetchContent_Declare(
+  engine
+  GIT_REPOSITORY https://github.com/rafal11ck/opengl-3d-engine.git
+  GIT_TAG main)
+FetchContent_MakeAvailable(engine)
+
+add_executable(main gameLevel.cpp main.cpp brick.cpp)
+
+target_include_directories(main PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
+
 target_link_libraries(main engine)

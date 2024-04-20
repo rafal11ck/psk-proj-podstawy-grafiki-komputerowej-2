@@ -2,3 +2,5 @@ src/.cache
 src/build/.cache
 src/build
 build
+src/.idea
+src/cmake-build-debug

@@ -11,11 +11,6 @@ pipeline {
                 sh 'pacman -Sy --noconfirm cmake base-devel doxygen graphviz git glew sfml glm stb'
             }
         }
-        stage('fetch submodules'){
-            steps{
-                sh 'git submodule update --recursive --remote'
-            }
-        }
         stage('Configure CMake project'){
             steps{
                 sh 'cmake -B build/ -S src'
@@ -23,7 +18,7 @@ pipeline {
         }
         stage('Compile'){
             steps{
-                sh 'cmake --build build/ -j'
+                sh 'cmake --build build/ -j $(nproc -ignore 1)'
             }
         }
     }
