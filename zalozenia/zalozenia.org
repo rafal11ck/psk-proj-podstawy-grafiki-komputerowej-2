@@ -1,0 +1,47 @@
+#+title:  Założenia projektowe
+#+language: polish
+#+latex_header: \usepackage{polski}
+#+options: toc:nil
+
+#+begin_comment
+Założenia projektowe są podstawą do późniejszej oceny na dalszych etapach projektu
+#+end_comment
+
+* Temat projektu
+** Temat
+- Wizualizacja gry arkanoid w 3D.
+
+* Ogólny opis zakładanych funkcjonalności (2-3 zdania lub lista punktowana)
+- Piłka :: odbija się od bloczków i paletki.
+- Paletka :: poruszana na boki, za pomocą klawiszy.
+- Bloczki :: rozbijane przez piłkę.
+
+- Logika gry tak jak w klasycznej grze arkanoid.
+- Ekran Game over z możliwością restartu gry.
+- Wizualizacja w 3d, kamera perspektywiczna.
+- Piłka będzie świecić.
+- Score.
+* Wybrane technologie i narzędzia
+** Język
+- C++.
+** Biblioteki
+- SFML.
+- glew.
+- glm.
+- stb.
+** Środowisko
+- Arch Linux.
+- cmake.
+- clang format.
+
+* Plan podziału pracy - które funkcjonalności powinny zostać zrealizowane do
+** III kamienia milowego
+- Świecąca piłka.
+- Paletka, sterowanie paletką.
+- Bloczki.
+** I terminu
+- Działająca gra.
+- Odbijanie piłki.
+- Score oraz game over.
+
+#  LocalWords:  over arkanoid Score cmake stb glm glew SFML clang
