@@ -11,13 +11,18 @@ int main() {
   light->setDiffuse(.4f, .4f, .4f);
   engine.addLight(light);
 
-  auto glevel{std::make_unique<GameLevel>(GameLevel{1, 1})};
+  auto glevel{std::make_unique<GameLevel>(GameLevel{3, 10})};
   engine.addDrawable(glevel.get());
 
   engine.setWireframeMode(true);
   engine.setCameraHandlingKeyboard(true);
-  // engine.setProjectionType(Engine::ProjectionType::perspective);
+  // engine.setCameraHandlingMouse(true);
+  engine.getWindow().setMouseCursorGrabbed(true);
+  engine.getWindow().setMouseCursorVisible(false);
+  engine.setProjectionType(Engine::ProjectionType::perspective);
   engine.getCamera().processKeyboard(Camera::BACKWARD, 2);
+
+  engine.setLoopFunction([&]() { engine.moveMouseToCenterOfWindow(); });
 
   engine.loop();
 }

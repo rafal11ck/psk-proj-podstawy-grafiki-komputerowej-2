@@ -29,6 +29,9 @@ public:
   virtual void draw(Shader &shader) override;
 
 protected:
+  /**
+   * @brief Trival getter for model
+   * */
   Shape &getModel();
 };
 

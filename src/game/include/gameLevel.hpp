@@ -12,7 +12,7 @@ public:
   GameLevel &operator=(GameLevel &&) = default;
 
 public:
-  GameLevel(int rowCount = s_rowCount, int columnCount = s_columnCount);
+  GameLevel(int rowCount, int columnCount);
 
   ~GameLevel();
 
@@ -26,54 +26,40 @@ public:
    */
   void setPostions();
 
-  virtual void draw(Shader &shader) override;
-
-protected:
-  /**
-   * @brief Padding of bricks from sides of screen.
-   */
-  static float s_borderPaddingSide;
-
-  /**
-   * @brief Padding of bricks from top of screen.
-   */
-  static float s_borderPaddingTop;
-
-  /**
-   * @brief How muchg space on screen brick takes.
-   */
-  static float s_brickHeight;
-
-  /**
-   * @brief How many columns are in row.
-   */
-  static int s_columnCount;
-  /**
-   * @ brief How many rows there are.
-   */
-  static int s_rowCount;
-
-  /**
-   *
-   */
+  void draw(Shader &shader) override;
 
 private:
-  std::vector<std::vector<Brick>> m_bricks;
+  int m_bricksRowCount{3};
+  int m_bricksColumnCount{7};
 
-  int m_rowCount;
-  int m_columnCount;
+  float m_brickHeight{0.1};
+
+  float m_paddingBricksTop{0};
+  float m_paddingBricksSide{0};
+
+  std::vector<std::vector<Brick>> m_bricks{};
 
   /**
    * @brief Compute width of single brick
    */
-  float brickWidth() const;
-
-  float bricksVericalScreenSpace() const;
+  float getBrickWidth() const;
 
   /**
-   * @brief Compute height of single brick
+   * @brief How much space on screen brick takes.
    */
-  float brickHeight() const;
+  float getBrickHeight() const;
+
+  /**
+   * @brief Compute where should origin of brick be.
+   * */
+  std::pair<float, float> computeBrickPositionOrigin(int column, int row) const;
+
+  /**
+   * @brief Compute where left top corner of bricks should be.
+   * */
+  std::pair<float, float> getBricksStartingPostion() const;
+
+  float getBricksHorizontalSpace() const;
 };
 
 #endif // GAMELEVEL_HPP_
