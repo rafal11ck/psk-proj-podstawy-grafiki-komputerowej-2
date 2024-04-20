@@ -2,18 +2,23 @@ pipeline {
     agent {
         docker {
             image 'archlinux'
-            //args '-v /var/jenkins_home/workspace/psk-proj-podstawy-grafiki-komputerowej-2/build:/var/jenkins_home/workspace/psk-proj-podstawy-grafiki-komputerowej-2/build'
+            args '-v ${WORKSPACE}/build:${WORKSPACE}/build'
         }
     }
     stages{
-        stage('Install dempendencies'){
+        stage('install dependencies'){
             steps{
                 sh 'pacman -Sy --noconfirm cmake base-devel doxygen graphviz git glew sfml glm stb'
             }
         }
+        stage('fetch submodules'){
+            steps{
+                sh 'git submodule update --recursive --remote'
+            }
+        }
         stage('Configure CMake project'){
             steps{
-                sh 'cmake -B build/'
+                sh 'cmake -B build/ -S src'
             }
         }
         stage('Compile'){
