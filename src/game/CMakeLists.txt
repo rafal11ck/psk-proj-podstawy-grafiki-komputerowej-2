@@ -6,9 +6,5 @@ FetchContent_Declare(
   GIT_TAG main)
 FetchContent_MakeAvailable(engine)
 
-add_executable(main main.cpp
-        Game.cpp
-        include/Game.hpp
-        Ball.cpp
-        include/Ball.hpp)
+add_executable(main main.cpp)
 target_link_libraries(main engine)
