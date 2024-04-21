@@ -1,30 +1,23 @@
 #ifndef BALL_HPP_
 #define BALL_HPP_
 
+#include "light.hpp"
 #include <glm/glm.hpp>
 #include <sphere.hpp>
 
-class Ball : virtual public Drawable {
+class Ball : virtual public Movable,
+             virtual public Light,
+             virtual public Sphere {
 public:
   Ball(const Ball &) = delete;
   Ball(Ball &&) = default;
   Ball &operator=(const Ball &) = delete;
-  Ball &operator=(Ball &&) = default;
+  Ball &operator=(Ball &&) = delete;
 
-  Ball();
-
-  Shape &getModel();
-
-  const glm::vec3 &getPos() const;
-
-  void draw(Shader &shader) override;
+  Ball(float radius = 0.05f);
 
 private:
-  glm::vec3 m_pos{};
-
-  float m_radius{0.05};
-
-  Sphere m_model{};
+  float m_radius{};
 };
 
 #endif // BALL_HPP_

@@ -1,9 +1,6 @@
 #include "ball.hpp"
 
-Ball::Ball() : m_model(m_radius){};
-
-Shape &Ball::getModel() { return m_model; };
-
-const glm::vec3 &Ball::getPos() const { return m_pos; };
-
-void Ball::draw(Shader &shader) { m_model.draw(shader); }
+Ball::Ball(float radius) : Sphere(radius), m_radius(radius) {
+  setDiffuse(glm::vec3{.05f});
+  setSpecular(glm::vec3{.05f});
+}

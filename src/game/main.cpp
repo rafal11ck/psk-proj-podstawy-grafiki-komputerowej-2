@@ -6,8 +6,8 @@ Engine &engine{Engine::getInstance()};
 
 void setupEngine() {
   Light *light{new Light{}};
-  light->setAmbient(glm::vec3{0.4f, 0.4f, 0.4f});
-  light->setDiffuse(.4f, .4f, .4f);
+  light->setAmbient(glm::vec3{0.2f, 0.2f, 0.2f});
+  // light->setDiffuse(.4f, .4f, .4f);
   engine.addLight(light);
 
   engine.setWireframeMode(true);
@@ -36,16 +36,27 @@ void setupEngine() {
   // engine.getWindow().setMouseCursorGrabbed(true);
   // engine.getWindow().setMouseCursorVisible(false);
   engine.setProjectionType(Engine::ProjectionType::perspective);
-
-  engine.setLoopFunction([&]() { // engine.moveMouseToCenterOfWindow();
-  });
 }
 
 int main() {
   setupEngine();
 
-  auto game{std::make_unique<Game>()};
+  auto ball{std::make_shared<Ball>()};
+  auto game{std::make_unique<Game>(ball)};
   engine.addDrawable(game.get());
+  engine.addLight(ball.get());
+
+  ball->setPosition(0.5f, .3f, .0f);
+
+  engine.setLoopFunction([&]() {
+    constexpr float rotTime{3};
+    static sf::Clock clock{};
+    if (clock.getElapsedTime().asSeconds() > rotTime) {
+      clock.restart();
+    };
+    float xPos{-1.f + (clock.getElapsedTime().asSeconds() / rotTime) * 2};
+    ball->setPosition(xPos, 0.f, 0.f);
+  });
 
   engine.getCamera().processKeyboard(Camera::BACKWARD, 2);
 
