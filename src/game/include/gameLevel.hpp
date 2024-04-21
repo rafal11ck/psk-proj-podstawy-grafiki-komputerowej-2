@@ -12,14 +12,14 @@ public:
   GameLevel &operator=(GameLevel &&) = default;
 
 public:
-  GameLevel(int rowCount = 2, int columnCount = 3);
+  GameLevel(int rowCount = 2, int columnCount = 4);
 
   ~GameLevel();
 
   /**
    * @brief Set brick's sizes (scale).
    */
-  void scaleBricks();
+  void setBrickSizes();
 
   /**
    * @brief Set brick's postions.

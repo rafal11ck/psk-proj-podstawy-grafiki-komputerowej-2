@@ -42,7 +42,7 @@ GameLevel::GameLevel(int rowCount, int columnCount)
   for (auto &row : m_bricks) {
     row.resize(columnCount);
   }
-  scaleBricks();
+  setBrickSizes();
   setPostions();
 };
 
@@ -60,15 +60,14 @@ void GameLevel::draw(Shader &shader) {
   }
 };
 
-void GameLevel::scaleBricks() {
+void GameLevel::setBrickSizes() {
   int row{};
   for (auto &brickRow : m_bricks) {
     int col{};
     {
       for (auto &brick : brickRow) {
-        brick.getModel().setScale(getBrickWidth() / 2, getBrickHeight() / 2,
-                                  1.f);
         ++col;
+        brick.setSize({getBrickWidth(), getBrickHeight(), 1.f});
       }
     }
     ++row;
@@ -84,7 +83,7 @@ void GameLevel::setPostions() {
         const auto pos{computeBrickPositionOrigin(col, row)};
         LOGINFO << "COL : " << col << " ROW" << row << " -> POS is ("
                 << pos.first << ", " << pos.second << ")" << '\n';
-        brick.getModel().setPosition(pos.first, pos.second, 0.0f);
+        brick.setPositionOrigin({pos.first, pos.second, 0.f});
         ++col;
       }
     }
