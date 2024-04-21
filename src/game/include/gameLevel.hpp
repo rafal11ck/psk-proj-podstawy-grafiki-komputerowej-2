@@ -16,17 +16,9 @@ public:
 
   ~GameLevel();
 
-  /**
-   * @brief Set brick's sizes (scale).
-   */
-  void setBrickSizes();
-
-  /**
-   * @brief Set brick's postions.
-   */
-  void setPostions();
-
   void draw(Shader &shader) override;
+
+  void setBricksHeight(float height);
 
 private:
   int m_bricksRowCount{2};
@@ -38,6 +30,23 @@ private:
   float m_paddingBricksSide{0};
 
   std::vector<std::vector<Brick>> m_bricks{};
+
+  /**
+   * @brief Update bricks data
+   *
+   * Updates postions and sizes of bricks.
+   */
+  void updateBricks();
+
+  /**
+   * @brief Set brick's sizes (scale).
+   */
+  void setBrickSizes();
+
+  /**
+   * @brief Set brick's postions.
+   */
+  void setBrickPostions();
 
   /**
    * @brief Compute width of single brick

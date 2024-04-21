@@ -31,7 +31,7 @@ void setupEngine() {
         }
       });
 
-  engine.setCameraHandlingKeyboard(true);
+  // engine.setCameraHandlingKeyboard(true);
   // engine.setCameraHandlingMouse(true);
   // engine.getWindow().setMouseCursorGrabbed(true);
   // engine.getWindow().setMouseCursorVisible(false);
@@ -42,7 +42,13 @@ int main() {
   setupEngine();
 
   auto ball{std::make_shared<Ball>()};
+
+  auto gl{std::make_unique<GameLevel>(10, 60)};
+  gl->setBricksHeight(0.035f);
+
   auto game{std::make_unique<Game>(ball)};
+  game->setGameLevel(std::move(gl));
+
   engine.addDrawable(game.get());
   engine.addLight(ball.get());
 
@@ -58,7 +64,7 @@ int main() {
     ball->setPosition(xPos, 0.f, 0.f);
   });
 
-  engine.getCamera().processKeyboard(Camera::BACKWARD, 2);
+  engine.getCamera().processKeyboard(Camera::BACKWARD, 1.2);
 
   engine.loop();
 }

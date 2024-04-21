@@ -14,7 +14,7 @@ public:
   Ball &operator=(const Ball &) = delete;
   Ball &operator=(Ball &&) = delete;
 
-  Ball(float radius = 0.05f);
+  Ball(float radius = 0.04f);
 
 private:
   float m_radius{};

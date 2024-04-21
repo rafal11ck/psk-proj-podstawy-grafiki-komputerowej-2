@@ -43,7 +43,7 @@ GameLevel::GameLevel(int rowCount, int columnCount)
     row.resize(columnCount);
   }
   setBrickSizes();
-  setPostions();
+  setBrickPostions();
 };
 
 float GameLevel::getBrickHeight() const { return m_brickHeight; }
@@ -74,7 +74,7 @@ void GameLevel::setBrickSizes() {
   }
 };
 
-void GameLevel::setPostions() {
+void GameLevel::setBrickPostions() {
   int row{};
   for (auto &brickRow : m_bricks) {
     int col{};
@@ -89,4 +89,12 @@ void GameLevel::setPostions() {
     }
     ++row;
   }
+}
+void GameLevel::setBricksHeight(float height) {
+  m_brickHeight = height;
+  updateBricks();
+}
+void GameLevel::updateBricks() {
+  setBrickSizes();
+  setBrickPostions();
 }
