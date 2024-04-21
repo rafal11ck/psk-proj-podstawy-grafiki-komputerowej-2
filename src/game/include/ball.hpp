@@ -16,6 +16,8 @@ public:
 
   Ball(float radius = 0.04f);
 
+  float getRadius() const;
+
 private:
   float m_radius{};
 };

@@ -20,6 +20,16 @@ public:
 
   void setBricksHeight(float height);
 
+  /**
+   * @brief positon of left collison line.
+   */
+  float getCollisonLinePositonLeft() const;
+
+  /**
+   * @brief positon of right collison line.
+   */
+  float getCollisonLinePositonRight() const;
+
 private:
   int m_bricksRowCount{2};
   int m_bricksColumnCount{3};

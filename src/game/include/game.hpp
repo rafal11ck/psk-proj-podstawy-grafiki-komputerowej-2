@@ -31,6 +31,22 @@ public:
     m_gameLevel = std::move(gameLevel);
   }
 
+  bool doesBallColideBorderRight() {
+    if (m_ball->getPosition().x + m_ball->getRadius() >=
+        m_gameLevel->getCollisonLinePositonRight()) {
+      return true;
+    }
+    return false;
+  }
+
+  bool doesBallColideBorderLeft() {
+    if (m_ball->getPosition().x - m_ball->getRadius() <=
+        m_gameLevel->getCollisonLinePositonLeft()) {
+      return true;
+    }
+    return false;
+  }
+
 private:
   /**
    * @brief Ball in the game.

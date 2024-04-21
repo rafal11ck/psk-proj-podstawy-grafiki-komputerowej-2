@@ -98,3 +98,12 @@ void GameLevel::updateBricks() {
   setBrickSizes();
   setBrickPostions();
 }
+
+float GameLevel::getCollisonLinePositonLeft() const {
+  // Beacuse middle is on 0 left border is just `-right`.
+  return -getCollisonLinePositonRight();
+};
+
+float GameLevel::getCollisonLinePositonRight() const {
+  return (getBricksHorizontalSpace() / 2);
+};
