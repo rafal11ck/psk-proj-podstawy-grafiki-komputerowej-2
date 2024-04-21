@@ -12,7 +12,7 @@ public:
   GameLevel &operator=(GameLevel &&) = default;
 
 public:
-  GameLevel(int rowCount, int columnCount);
+  GameLevel(int rowCount = 2, int columnCount = 3);
 
   ~GameLevel();
 
@@ -29,8 +29,8 @@ public:
   void draw(Shader &shader) override;
 
 private:
-  int m_bricksRowCount{3};
-  int m_bricksColumnCount{7};
+  int m_bricksRowCount{2};
+  int m_bricksColumnCount{3};
 
   float m_brickHeight{0.1};
 
