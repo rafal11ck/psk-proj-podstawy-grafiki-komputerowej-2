@@ -18,10 +18,16 @@ public:
   void draw(Shader &shader) override;
 
   /**
-   * @brief Process in game events.
-   *
+   * @brief Process game logic
+   * @param dt Time.
    */
-  void update(float dt) {}
+  void update(const float dt);
+
+  /**
+   * @brief Process ball movement.
+   * @param dt Time.
+   */
+  void processBallMovement(const float dt);
 
   /**
    * @brief Set game level.
@@ -31,7 +37,10 @@ public:
     m_gameLevel = std::move(gameLevel);
   }
 
-  bool doesBallColideBorderRight() {
+  /**
+   * @brief Check wheather ball collides with border on the right side.
+   */
+  bool doesBallCollideBorderRight() {
     if (m_ball->getPosition().x + m_ball->getRadius() >=
         m_gameLevel->getCollisonLinePositonRight()) {
       return true;
@@ -39,7 +48,10 @@ public:
     return false;
   }
 
-  bool doesBallColideBorderLeft() {
+  /**
+   * @brief Check wheather ball collides with border on the left side.
+   */
+  bool doesBallCollideBorderLeft() {
     if (m_ball->getPosition().x - m_ball->getRadius() <=
         m_gameLevel->getCollisonLinePositonLeft()) {
       return true;
@@ -49,9 +61,28 @@ public:
 
 private:
   /**
+   * @brief Collisons of ball from walls and bricks.
+   */
+  enum class BallCollison { horizontal, vertical };
+
+  /**
+   * @param collisonSide Which side ball hit.
+   *
+   * @return vector of ball movement after collison with obstile on direction
+   */
+  glm::vec2 ballVectorAfterWallCollision(BallCollison collisonDirection);
+
+  void processBallCollisons();
+
+  /**
    * @brief Ball in the game.
    */
   std::shared_ptr<Ball> m_ball;
+
+  /**
+   * @brief Normalized ballMovmentVector
+   */
+  glm::vec2 m_ballMovementVector{glm::vec2{1.f, 0.f}};
 
   /**
    * @brief Game level in the game.
@@ -66,7 +97,7 @@ private:
   /**
    * @brief speed of ball.
    */
-  float m_ballspeed{0.05};
+  float m_ballspeed{0.003};
 };
 
 #endif // GAME_HPP_

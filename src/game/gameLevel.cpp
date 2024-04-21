@@ -94,6 +94,7 @@ void GameLevel::setBricksHeight(float height) {
   m_brickHeight = height;
   updateBricks();
 }
+
 void GameLevel::updateBricks() {
   setBrickSizes();
   setBrickPostions();

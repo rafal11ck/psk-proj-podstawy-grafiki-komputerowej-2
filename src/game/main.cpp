@@ -4,6 +4,16 @@
 
 Engine &engine{Engine::getInstance()};
 
+bool state{false};
+
+void cameraContorolSwap() {
+  state = !state;
+  engine.setCameraHandlingKeyboard(state);
+  engine.setCameraHandlingMouse(state);
+  engine.getWindow().setMouseCursorGrabbed(state);
+  engine.getWindow().setMouseCursorVisible(!state);
+}
+
 void setupEngine() {
   Light *light{new Light{}};
   light->setAmbient(glm::vec3{0.2f, 0.2f, 0.2f});
@@ -26,15 +36,13 @@ void setupEngine() {
                                        ? Engine::ProjectionType::orthogonal
                                        : Engine::ProjectionType::perspective);
           return;
+        case sf::Keyboard::K:
+          cameraContorolSwap();
         default:
           return;
         }
       });
 
-  // engine.setCameraHandlingKeyboard(true);
-  // engine.setCameraHandlingMouse(true);
-  // engine.getWindow().setMouseCursorGrabbed(true);
-  // engine.getWindow().setMouseCursorVisible(false);
   engine.setProjectionType(Engine::ProjectionType::perspective);
 }
 
@@ -55,13 +63,10 @@ int main() {
   ball->setPosition(0.5f, .3f, .0f);
 
   engine.setLoopFunction([&]() {
-    constexpr float rotTime{3};
-    static sf::Clock clock{};
-    if (clock.getElapsedTime().asSeconds() > rotTime) {
-      clock.restart();
-    };
-    float xPos{-1.f + (clock.getElapsedTime().asSeconds() / rotTime) * 2};
-    ball->setPosition(xPos, 0.f, 0.f);
+    game->processBallMovement(engine.getLastFrameDuration().asSeconds());
+    if (state) {
+      engine.moveMouseToCenterOfWindow();
+    }
   });
 
   engine.getCamera().processKeyboard(Camera::BACKWARD, 1.2);
