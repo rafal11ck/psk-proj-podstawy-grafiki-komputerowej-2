@@ -40,7 +40,7 @@ public:
   /**
    * @brief Check wheather ball collides with border on the right side.
    */
-  bool doesBallCollideBorderRight() {
+  bool doesBallCollideBorderRight() const {
     if (m_ball->getPosition().x + m_ball->getRadius() >=
         m_gameLevel->getCollisonLinePositonRight()) {
       return true;
@@ -51,9 +51,17 @@ public:
   /**
    * @brief Check wheather ball collides with border on the left side.
    */
-  bool doesBallCollideBorderLeft() {
+  bool doesBallCollideBorderLeft() const {
     if (m_ball->getPosition().x - m_ball->getRadius() <=
         m_gameLevel->getCollisonLinePositonLeft()) {
+      return true;
+    }
+    return false;
+  }
+
+  bool doesBallCollideBorderTop() const {
+    if (m_ball->getPosition().y + m_ball->getRadius() >=
+        m_gameLevel->getCollisonLinePositonTop()) {
       return true;
     }
     return false;
@@ -70,9 +78,24 @@ private:
    *
    * @return vector of ball movement after collison with obstile on direction
    */
-  glm::vec2 ballVectorAfterWallCollision(BallCollison collisonDirection);
+  glm::vec3 ballVectorAfterCollision(BallCollison collisonDirection);
 
-  void processBallCollisons();
+  /**
+   * @brief Find collsion vector if collisons occurs
+   *
+   * @retunrs Collison surface normal vector, or {0,0,0} vector if no collison
+   * occured.
+   * */
+  glm::vec3 findBallCollisonVector() const;
+
+  /**
+   * @brief Perform ball collison with surface
+   * @param normal Normal vector of surface hit.
+   */
+  void performBallReflect(glm::vec3 normal) {
+    auto n{glm::normalize(normal)};
+    m_ballMovementVector = glm::reflect(m_ballMovementVector, normal);
+  }
 
   /**
    * @brief Ball in the game.
@@ -82,7 +105,7 @@ private:
   /**
    * @brief Normalized ballMovmentVector
    */
-  glm::vec2 m_ballMovementVector{glm::vec2{1.f, 0.f}};
+  glm::vec3 m_ballMovementVector{glm::vec3{1.f, 0.1f, 0.f}};
 
   /**
    * @brief Game level in the game.
@@ -97,7 +120,7 @@ private:
   /**
    * @brief speed of ball.
    */
-  float m_ballspeed{0.003};
+  float m_ballspeed{0.005};
 };
 
 #endif // GAME_HPP_

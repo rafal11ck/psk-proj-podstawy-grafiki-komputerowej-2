@@ -51,7 +51,7 @@ int main() {
 
   auto ball{std::make_shared<Ball>()};
 
-  auto gl{std::make_unique<GameLevel>(10, 60)};
+  auto gl{std::make_unique<GameLevel>(3, 7)};
   gl->setBricksHeight(0.035f);
 
   auto game{std::make_unique<Game>(ball)};
@@ -60,7 +60,7 @@ int main() {
   engine.addDrawable(game.get());
   engine.addLight(ball.get());
 
-  ball->setPosition(0.5f, .3f, .0f);
+  ball->setPosition(0.5f, .7f, .0f);
 
   engine.setLoopFunction([&]() {
     game->processBallMovement(engine.getLastFrameDuration().asSeconds());

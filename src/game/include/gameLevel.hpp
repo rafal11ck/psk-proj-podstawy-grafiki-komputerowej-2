@@ -30,6 +30,13 @@ public:
    */
   float getCollisonLinePositonRight() const;
 
+  /**
+   * @brief positon of top collsion line.
+   */
+  float getCollisonLinePositonTop() const {
+    return getBricksStartingPostion().second;
+  };
+
 private:
   int m_bricksRowCount{2};
   int m_bricksColumnCount{3};

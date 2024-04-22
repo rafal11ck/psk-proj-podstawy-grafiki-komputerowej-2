@@ -11,29 +11,33 @@ void Game::draw(Shader &shader) {
 void Game::update(const float dt) { processBallMovement(dt); };
 
 void Game::processBallMovement(const float dt) {
-  processBallCollisons();
+  glm::vec3 collisonNvec{findBallCollisonVector()};
+  // if collison occured
+  if (glm::length(collisonNvec) > 0) {
+    performBallReflect(collisonNvec);
+  }
 
-  glm::vec3 posChange{m_ballspeed * glm::vec3{m_ballMovementVector, 0.f}};
+  glm::vec3 posChange{m_ballspeed * glm::vec3{m_ballMovementVector}};
   m_ball->setPosition(m_ball->getPosition() + posChange);
 
   LOGINFO << m_ball->getPosition().x << '\n';
 };
 
-void Game::processBallCollisons() {
-  if (doesBallCollideBorderRight() || doesBallCollideBorderLeft()) {
-    m_ballMovementVector = ballVectorAfterWallCollision(BallCollison::vertical);
+glm::vec3 Game::findBallCollisonVector() const {
+  // Map border collsion right
+  if (doesBallCollideBorderRight()) {
+    return {-1.f, 0.f, 0.f};
   }
-};
 
-glm::vec2 Game::ballVectorAfterWallCollision(BallCollison collisonDirection) {
-  glm::vec2 vec{m_ballMovementVector};
-  switch (collisonDirection) {
-  case BallCollison::horizontal:
-    vec.y = -vec.y;
-    break;
-  case BallCollison::vertical:
-    vec.x = -vec.x;
-    break;
+  // Map border collsion left
+  if (doesBallCollideBorderLeft()) {
+    return {1.f, 0.f, 0.f};
   }
-  return glm::normalize(vec);
+
+  // Map border collsion top
+  if (doesBallCollideBorderTop()) {
+    return {0.f, -1.f, 0.f};
+  }
+
+  return {0.f, 0.f, 0.f};
 };
