@@ -25,6 +25,7 @@ public:
 
   /**
    * @brief Process ball movement.
+   *
    * @param dt Time.
    */
   void processBallMovement(const float dt);
@@ -38,59 +39,20 @@ public:
   }
 
   /**
-   * @brief Check wheather ball collides with border on the right side.
+   * @brief Get normal vector of map border hit if any.
+   *
+   * @return Normal vector of hit surface or {0,0,0};
    */
-  bool doesBallCollideBorderRight() const {
-    if (m_ball->getPosition().x + m_ball->getRadius() >=
-        m_gameLevel->getCollisonLinePositonRight()) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * @brief Check wheather ball collides with border on the left side.
-   */
-  bool doesBallCollideBorderLeft() const {
-    if (m_ball->getPosition().x - m_ball->getRadius() <=
-        m_gameLevel->getCollisonLinePositonLeft()) {
-      return true;
-    }
-    return false;
-  }
-
-  bool doesBallCollideBorderTop() const {
-    if (m_ball->getPosition().y + m_ball->getRadius() >=
-        m_gameLevel->getCollisonLinePositonTop()) {
-      return true;
-    }
-    return false;
-  }
+  glm::vec3 mapBordersCollision() const;
 
 private:
-  /**
-   * @brief Collisons of ball from walls and bricks.
-   */
-  enum class BallCollison { horizontal, vertical };
+  void handleBrickCollisions();
 
   /**
-   * @param collisonSide Which side ball hit.
-   *
-   * @return vector of ball movement after collison with obstile on direction
-   */
-  glm::vec3 ballVectorAfterCollision(BallCollison collisonDirection);
-
-  /**
-   * @brief Find collsion vector if collisons occurs
-   *
-   * @retunrs Collison surface normal vector, or {0,0,0} vector if no collison
-   * occured.
-   * */
-  glm::vec3 findBallCollisonVector() const;
-
-  /**
-   * @brief Perform ball collison with surface
+   * @brief Perform ball collision with surface
    * @param normal Normal vector of surface hit.
+   *
+   * Changes m_ballMovementVector to reflect bounce.
    */
   void performBallReflect(glm::vec3 normal) {
     auto n{glm::normalize(normal)};
@@ -98,12 +60,17 @@ private:
   }
 
   /**
+   * @brief Handle collisions why any objects.
+   */
+  void handleCollisions();
+
+  /**
    * @brief Ball in the game.
    */
   std::shared_ptr<Ball> m_ball;
 
   /**
-   * @brief Normalized ballMovmentVector
+   * @brief Normalized ballMovementVector
    */
   glm::vec3 m_ballMovementVector{glm::vec3{1.f, 0.1f, 0.f}};
 
@@ -113,14 +80,14 @@ private:
   std::unique_ptr<GameLevel> m_gameLevel{std::make_unique<GameLevel>()};
 
   /**
-   * @brief Pallete in the game.
+   * @brief Palette in the game.
    */
-  Pallette m_pallette{};
+  Pallette m_palette{};
 
   /**
    * @brief speed of ball.
    */
-  float m_ballspeed{0.005};
+  float m_ballSpeed{0.005};
 };
 
 #endif // GAME_HPP_

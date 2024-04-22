@@ -41,11 +41,9 @@ public:
     updateModel();
   }
 
-protected:
-  /**
-   * @brief Trival getter for model
-   * */
-  Shape &getModel();
+  const glm::vec3 &getPositonOrigin() const;
+
+  const glm::vec3 &getSize() const;
 
 private:
   void updateModel();

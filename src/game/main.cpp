@@ -51,7 +51,7 @@ int main() {
 
   auto ball{std::make_shared<Ball>()};
 
-  auto gl{std::make_unique<GameLevel>(3, 7)};
+  auto gl{std::make_unique<GameLevel>(1, 1)};
   gl->setBricksHeight(0.035f);
 
   auto game{std::make_unique<Game>(ball)};

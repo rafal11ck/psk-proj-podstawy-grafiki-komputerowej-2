@@ -102,9 +102,56 @@ void GameLevel::updateBricks() {
 
 float GameLevel::getCollisonLinePositonLeft() const {
   // Beacuse middle is on 0 left border is just `-right`.
-  return -getCollisonLinePositonRight();
+  return -getCollisionLinePositionRight();
 };
 
-float GameLevel::getCollisonLinePositonRight() const {
+float GameLevel::getCollisionLinePositionRight() const {
   return (getBricksHorizontalSpace() / 2);
 };
+
+const std::optional<std::reference_wrapper<Brick>>
+GameLevel::findCollidingBrick(const Ball &ball) {
+  auto result{std::optional<std::reference_wrapper<Brick>>()};
+  float smallestDistanceSoFar{INFINITY};
+
+  // For each brick
+  for (auto &brickRow : m_bricks) {
+    for (Brick &brick : brickRow) {
+
+      const glm::vec3 brickHalfExtent{0.5f * brick.getSize()};
+
+      auto diffVector{ball.getPosition() - brick.getPositonOrigin()};
+      // Raw distance from brick origin to ball origin.
+      {
+        const float rawDistance{glm::length(diffVector)};
+        // Farest raw distance of ball-brick origins for collision to be
+        // possible.
+        float checkingRange{glm::length(brickHalfExtent) + ball.getRadius()};
+        // Skip if not within checking range
+        if (rawDistance > checkingRange)
+          continue;
+      }
+
+      // Where is the closest point to the ball that is on the brick's surface
+      glm::vec3 clamped{
+          glm::clamp(diffVector, -brickHalfExtent, brickHalfExtent)};
+
+      // Position of nearest point to the ball on the brick's surface.
+      glm::vec3 nearestPoint{brick.getPositonOrigin() + clamped};
+
+      float distance{glm::distance(nearestPoint, ball.getPosition())};
+
+      LOGINFO << &brick << " distance = " << distance << '\n';
+      // If collision occurs
+      if (distance <= ball.getRadius()) {
+        LOGWARN << "HIT \n";
+        if (smallestDistanceSoFar > distance) {
+          LOGWARN << "BETTER HIT! found! \n";
+          smallestDistanceSoFar = distance;
+          result = brick;
+        }
+      }
+    }
+  }
+  return result;
+}

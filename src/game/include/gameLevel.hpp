@@ -1,7 +1,9 @@
 #ifndef GAMELEVEL_HPP_
 #define GAMELEVEL_HPP_
 
+#include "ball.hpp"
 #include "brick.hpp"
+#include <optional>
 #include <vector>
 
 class GameLevel : public virtual Drawable {
@@ -28,7 +30,7 @@ public:
   /**
    * @brief positon of right collison line.
    */
-  float getCollisonLinePositonRight() const;
+  float getCollisionLinePositionRight() const;
 
   /**
    * @brief positon of top collsion line.
@@ -36,6 +38,9 @@ public:
   float getCollisonLinePositonTop() const {
     return getBricksStartingPostion().second;
   };
+
+  const std::optional<std::reference_wrapper<Brick>>
+  findCollidingBrick(const Ball &);
 
 private:
   int m_bricksRowCount{2};

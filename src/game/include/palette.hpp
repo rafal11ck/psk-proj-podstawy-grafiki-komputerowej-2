@@ -12,7 +12,7 @@ public:
 
   Pallette() {
     setSize({0.3f, 0.08f, 1.f});
-    setPositionOrigin({0.f, -1.f + getModel().getScale().y / 2, 0.f});
+    setPositionOrigin({0.f, -1.f + getSize().y / 2, 0.f});
   }
 };
 
