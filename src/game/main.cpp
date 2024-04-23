@@ -1,6 +1,7 @@
 #include "engine.hpp"
 #include "game.hpp"
 #include <memory>
+#include <random>
 
 Engine &engine{Engine::getInstance()};
 
@@ -52,7 +53,7 @@ int main() {
 
   auto ball{std::make_shared<Ball>()};
 
-  auto gl{std::make_unique<GameLevel>(4, 1)};
+  auto gl{std::make_unique<GameLevel>(4, 5)};
   gl->setBricksHeight(0.1f);
 
   auto game{std::make_unique<Game>(ball)};
@@ -68,11 +69,19 @@ int main() {
     static float dt{};
     dt += engine.getLastFrameDuration().asSeconds();
 
-    if (dt > 5) {
+    if (dt > 3) {
       ball->setPosition(0.0f, 0.35f, 0.f);
-      game->setBallMovementVector(glm::normalize(glm::vec3{0.f, 1.f, 0.f}));
+
+      static std::mt19937 generator{};
+
+      static std::uniform_real_distribution dis{-1.f, 1.f};
+
+      float x{dis(generator)};
+      float y{1.f + dis(generator)};
+
+      game->setBallMovementVector(glm::normalize(glm::vec3{x, y, 0.f}));
       dt = 0;
-      game->setBallSpeed(0.001);
+      game->setBallSpeed(0.01);
     }
     if (state) {
       engine.moveMouseToCenterOfWindow();
