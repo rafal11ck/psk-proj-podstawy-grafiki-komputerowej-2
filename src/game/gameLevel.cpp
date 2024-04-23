@@ -138,8 +138,8 @@ GameLevel::findCollisonPoint(const Ball &ball, const Brick &brick) const {
 
 const std::pair<std::optional<std::reference_wrapper<Brick>>, glm::vec3>
 GameLevel::findCollidingBrick(const Ball &ball) {
-  auto result{std::optional<std::reference_wrapper<Brick>>()};
-  glm::vec3 collisonPoint{};
+  auto result{std::make_pair(std::optional<std::reference_wrapper<Brick>>(),
+                             glm::vec3{})};
   float smallestDistanceSoFar{INFINITY};
 
   // For each brick
@@ -158,14 +158,14 @@ GameLevel::findCollidingBrick(const Ball &ball) {
               glm::distance(ball.getPosition(), pointOfCollison.value())};
           if (smallestDistanceSoFar > distance) {
             smallestDistanceSoFar = distance;
-            result = brick;
-            //    collisonPoint = nearestPoint;
+            result.first = brick;
+            result.second = pointOfCollison.value();
           }
         }
       }
     }
   }
-  return {result, collisonPoint};
+  return result;
 }
 
 glm::vec3 GameLevel::findNearestPointOnContour(const Ball &ball,

@@ -53,7 +53,7 @@ int main() {
 
   auto ball{std::make_shared<Ball>()};
 
-  auto gl{std::make_unique<GameLevel>(4, 5)};
+  auto gl{std::make_unique<GameLevel>(2, 5)};
   gl->setBricksHeight(0.1f);
 
   auto game{std::make_unique<Game>(ball)};
@@ -69,7 +69,7 @@ int main() {
     static float dt{};
     dt += engine.getLastFrameDuration().asSeconds();
 
-    if (dt > 3) {
+    if (dt > 2.5) {
       ball->setPosition(0.0f, 0.35f, 0.f);
 
       static std::mt19937 generator{};
@@ -81,7 +81,7 @@ int main() {
 
       game->setBallMovementVector(glm::normalize(glm::vec3{x, y, 0.f}));
       dt = 0;
-      game->setBallSpeed(0.01);
+      game->setBallSpeed(0.02);
     }
     if (state) {
       engine.moveMouseToCenterOfWindow();

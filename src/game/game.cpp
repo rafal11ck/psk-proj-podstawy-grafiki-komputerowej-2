@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "log.hpp"
 
 Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball){};
 
@@ -68,6 +69,7 @@ void Game::handleBrickCollisions() {
     // point
     auto &p{hitBrick.second};
 
+    LOGINFO << "HIT at " << p << '\n';
     auto ballToCollisonPointVec{p - m_ball->getPosition()};
     Game::performBallReflect(glm::normalize(ballToCollisonPointVec));
 
@@ -76,13 +78,10 @@ void Game::handleBrickCollisions() {
     auto revertVec{m_ball->getRadius() *
                    glm::normalize(ballToCollisonPointVec)};
 
-    // m_ball->setPosition(m_ball->getPosition() + revertVec);
-    // LOGINFO << "MOVED BALL " << revertVec << "\n";
-
     auto newBallPos{p - revertVec};
 
     // Move ball to hit position, but not penetrated
-    m_ball->setPosition(newBallPos);
+    // m_ball->setPosition(newBallPos);
   }
 };
 
