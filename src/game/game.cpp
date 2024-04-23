@@ -63,25 +63,27 @@ std::ostream &operator<<(std::ostream &os, glm::vec3 vec) {
 void Game::handleBrickCollisions() {
   auto hitBrick{m_gameLevel->findCollidingBrick(*m_ball.get())};
 
+  // if collides
   if (hitBrick.first.has_value()) {
     // brick
-    auto &br{hitBrick.first.value()};
+    auto &brick{hitBrick.first.value()};
     // point
-    auto &p{hitBrick.second};
+    auto &collisonPoint{hitBrick.second};
 
-    LOGINFO << "HIT at " << p << '\n';
-    auto ballToCollisonPointVec{p - m_ball->getPosition()};
+    LOGINFO << "HIT at " << collisonPoint << '\n';
+    auto ballToCollisonPointVec{collisonPoint - m_ball->getPosition()};
     Game::performBallReflect(glm::normalize(ballToCollisonPointVec));
 
     // normalize Vector so it's lentght is 1,
     // then extend to size of ball radius.
+    // This is relative positon from ball to coliision point.
     auto revertVec{m_ball->getRadius() *
                    glm::normalize(ballToCollisonPointVec)};
 
-    auto newBallPos{p - revertVec};
+    // Move ball back as if it bounced off instead of penetrating.
+    auto newBallPos{collisonPoint - revertVec};
 
-    // Move ball to hit position, but not penetrated
-    // m_ball->setPosition(newBallPos);
+    brick.get().damage();
   }
 };
 

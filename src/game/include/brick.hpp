@@ -88,6 +88,12 @@ public:
    */
   bool isCollidable() const;
 
+  /**
+   * @brief Damage brick
+   * @param damage How much damage brick should take.
+   */
+  void damage(int damage = 1);
+
 private:
   void updateModel();
   void updateModelScale();
