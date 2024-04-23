@@ -10,7 +10,22 @@ class Brick : public Drawable {
   /**
    * @brief How many hits can it take.
    */
-  int m_durability{1};
+  int m_maxDurability{1};
+
+  /**
+   * @brief durability of brick
+   */
+  int m_durability{m_maxDurability};
+
+  /**
+   * @brief Weather it can have it's durability damaged.
+   * */
+  bool m_isImmuneToHits{false};
+
+  /**
+   * @brief Weather Ball can hit it.
+   */
+  bool m_isHitable{true};
 
   glm::vec3 m_size{0.1f, 0.1f, 1.f};
 
@@ -31,10 +46,9 @@ public:
    */
   virtual void draw(Shader &shader) override;
 
-  void setPositionOrigin(glm::vec3 originPos) {
-    m_positionOrigin = originPos;
-    updateModel();
-  };
+  void setIsImmuneTohits(bool immune);
+
+  void setPositionOrigin(glm::vec3 originPos);
 
   void setSize(glm::vec3 size) {
     m_size = size;
@@ -48,7 +62,7 @@ public:
 private:
   void updateModel();
   void updateModelScale();
-  void updateModelPosition() { m_model.setPosition(m_positionOrigin); };
+  void updateModelPosition();
 };
 
 #endif // BRICK_HPP_
