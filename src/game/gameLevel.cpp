@@ -109,8 +109,8 @@ float GameLevel::getCollisionLinePositionRight() const {
   return (getBricksHorizontalSpace() / 2);
 };
 
-std::optional<glm::vec3> findCollisonPoint(Ball &ball, Brick &brick) {
-
+std::optional<glm::vec3>
+GameLevel::findCollisonPoint(const Ball &ball, const Brick &brick) const {
   const glm::vec3 brickHalfExtent{0.5f * brick.getSize()};
 
   auto diffVector{ball.getPosition() - brick.getPositonOrigin()};
@@ -123,16 +123,13 @@ std::optional<glm::vec3> findCollisonPoint(Ball &ball, Brick &brick) {
   if (rawDistance > checkingRange)
     return {};
 
-  // Where is the closest point to the ball that is on the brick's surface
-  glm::vec3 clamped{glm::clamp(diffVector, -brickHalfExtent, brickHalfExtent)};
-
-  // Position of nearest point to the ball on the brick's surface.
-  glm::vec3 nearestPoint{brick.getPositonOrigin() + clamped};
+  auto nearestPoint{findNearestPointOnContour(ball, brick)};
 
   float distance{glm::distance(nearestPoint, ball.getPosition())};
 
   // If collision occurs
   if (distance <= ball.getRadius()) {
+    // return point.
     return nearestPoint;
   }
 
@@ -149,16 +146,39 @@ GameLevel::findCollidingBrick(const Ball &ball) {
   for (auto &brickRow : m_bricks) {
     for (Brick &brick : brickRow) {
 
-      // @FIXME
-      // @TODO
-      // auto disPoint;
-      if (smallestDistanceSoFar > distance) {
-        smallestDistanceSoFar = distance;
-        result = brick;
-        collisonPoint = nearestPoint;
+      auto point{findCollisonPoint(ball, brick)};
+      // If collison
+      if (point.has_value()) {
+        // @FIXME
+        // @TODO
+        // auto disPoint;
+        auto pointOfCollison{findCollisonPoint(ball, brick)};
+        if (pointOfCollison.has_value()) {
+          float distance{
+              glm::distance(ball.getPosition(), pointOfCollison.value())};
+          if (smallestDistanceSoFar > distance) {
+            smallestDistanceSoFar = distance;
+            result = brick;
+            //    collisonPoint = nearestPoint;
+          }
+        }
       }
     }
   }
+  return {result, collisonPoint};
 }
-return {result, collisonPoint};
-}
+
+glm::vec3 GameLevel::findNearestPointOnContour(const Ball &ball,
+                                               const Brick &brick) const {
+
+  const glm::vec3 brickHalfExtent{0.5f * brick.getSize()};
+
+  auto diffVector{ball.getPosition() - brick.getPositonOrigin()};
+  // Where is the closest point to the ball that is on the brick's surface
+  glm::vec3 clamped{glm::clamp(diffVector, -brickHalfExtent, brickHalfExtent)};
+
+  // Position of nearest point to the ball on the brick's surface.
+  glm::vec3 nearestPoint{brick.getPositonOrigin() + clamped};
+
+  return nearestPoint;
+};

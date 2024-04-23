@@ -1,7 +1,6 @@
 #ifndef BRICK_HPP_
 #define BRICK_HPP_
 
-#include "ball.hpp"
 #include "cube.hpp"
 #include "drawable.hpp"
 

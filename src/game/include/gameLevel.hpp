@@ -91,6 +91,11 @@ private:
   std::pair<float, float> getBricksStartingPostion() const;
 
   float getBricksHorizontalSpace() const;
-};
 
+  std::optional<glm::vec3> findCollisonPoint(const Ball &ball,
+                                             const Brick &brick) const;
+
+  glm::vec3 findNearestPointOnContour(const Ball &ball,
+                                      const Brick &brick) const;
+};
 #endif // GAMELEVEL_HPP_
