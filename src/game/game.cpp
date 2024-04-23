@@ -1,5 +1,4 @@
 #include "game.hpp"
-#include "log.hpp"
 
 Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball){};
 
@@ -69,12 +68,7 @@ void Game::handleBrickCollisions() {
     // point
     auto &p{hitBrick.second};
 
-    LOGWARN << "HIT! , WITH POINT = " << p
-            << " DISTANCE = " << glm::distance(p, m_ball->getPosition())
-            << '\n';
-
     auto ballToCollisonPointVec{p - m_ball->getPosition()};
-    LOGINFO << "ballToPoint vector is" << ballToCollisonPointVec << '\n';
     Game::performBallReflect(glm::normalize(ballToCollisonPointVec));
 
     // normalize Vector so it's lentght is 1,
