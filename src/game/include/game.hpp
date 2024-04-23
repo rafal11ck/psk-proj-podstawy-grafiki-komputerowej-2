@@ -45,6 +45,10 @@ public:
    */
   glm::vec3 mapBordersCollision() const;
 
+  void setBallMovementVector(glm::vec3 vector);
+
+  void setBallSpeed(float speed);
+
 private:
   void handleBrickCollisions();
 

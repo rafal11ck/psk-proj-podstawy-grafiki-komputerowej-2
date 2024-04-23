@@ -51,7 +51,7 @@ int main() {
 
   auto ball{std::make_shared<Ball>()};
 
-  auto gl{std::make_unique<GameLevel>(1, 1)};
+  auto gl{std::make_unique<GameLevel>(3, 5)};
   gl->setBricksHeight(0.035f);
 
   auto game{std::make_unique<Game>(ball)};
@@ -64,6 +64,16 @@ int main() {
 
   engine.setLoopFunction([&]() {
     game->processBallMovement(engine.getLastFrameDuration().asSeconds());
+    static float dt{};
+    dt += engine.getLastFrameDuration().asSeconds();
+
+    if (dt > 5) {
+      ball->setPosition(0.f, 0.f, 0.f);
+      game->setBallMovementVector(glm::normalize(glm::vec3{
+          static_cast<float>(rand()), static_cast<float>(rand() + 1), 0.f}));
+      dt = 0;
+      game->setBallSpeed(0.01);
+    }
     if (state) {
       engine.moveMouseToCenterOfWindow();
     }

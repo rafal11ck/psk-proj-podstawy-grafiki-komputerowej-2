@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "log.hpp"
 
 Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball){};
 
@@ -12,7 +13,7 @@ void Game::update(const float dt) { processBallMovement(dt); };
 glm::vec3 Game::mapBordersCollision() const {
   // Map border collsion right
   if (m_ball->getPosition().x + m_ball->getRadius() >=
-          m_gameLevel->getCollisionLinePositionRight()) {
+      m_gameLevel->getCollisionLinePositionRight()) {
     return {-1.f, 0.f, 0.f};
   }
 
@@ -49,7 +50,7 @@ void Game::handleCollisions() {
     return;
   }
 
-    handleBrickCollisions();
+  handleBrickCollisions();
 
   /// @TODO Handle pallete collision.
 }
@@ -57,4 +58,26 @@ void Game::handleCollisions() {
 /// @TODO Handle brick collisons.
 void Game::handleBrickCollisions() {
   auto hitBrick{m_gameLevel->findCollidingBrick(*m_ball.get())};
+
+  if (hitBrick.first.has_value()) {
+    // brick
+    auto &br{hitBrick.first.value()};
+    // point
+    auto &p{hitBrick.second};
+
+    LOGWARN << "HIT! , WITH POINT = " << p.x << ' ' << p.y << ' ' << p.z
+            << " DISTANCE = " << glm::distance(p, m_ball->getPosition())
+            << '\n';
+
+    Game::performBallReflect(
+        glm::normalize(br.get().getPositonOrigin() - m_ball->getPosition()));
+
+    // Vector from ball to point.
+    auto ballVec{p - m_ball->getPosition()};
+  }
 };
+
+void Game::setBallMovementVector(glm::vec3 vector) {
+  m_ballMovementVector = vector;
+};
+void Game::setBallSpeed(float speed) { m_ballSpeed = speed; };

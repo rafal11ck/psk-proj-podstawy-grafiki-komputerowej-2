@@ -39,7 +39,7 @@ public:
     return getBricksStartingPostion().second;
   };
 
-  const std::optional<std::reference_wrapper<Brick>>
+  const std::pair<std::optional<std::reference_wrapper<Brick>>, glm::vec3>
   findCollidingBrick(const Ball &);
 
 private:

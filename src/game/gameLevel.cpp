@@ -109,9 +109,10 @@ float GameLevel::getCollisionLinePositionRight() const {
   return (getBricksHorizontalSpace() / 2);
 };
 
-const std::optional<std::reference_wrapper<Brick>>
+const std::pair<std::optional<std::reference_wrapper<Brick>>, glm::vec3>
 GameLevel::findCollidingBrick(const Ball &ball) {
   auto result{std::optional<std::reference_wrapper<Brick>>()};
+  glm::vec3 collisonPoint{};
   float smallestDistanceSoFar{INFINITY};
 
   // For each brick
@@ -141,17 +142,15 @@ GameLevel::findCollidingBrick(const Ball &ball) {
 
       float distance{glm::distance(nearestPoint, ball.getPosition())};
 
-      LOGINFO << &brick << " distance = " << distance << '\n';
       // If collision occurs
       if (distance <= ball.getRadius()) {
-        LOGWARN << "HIT \n";
         if (smallestDistanceSoFar > distance) {
-          LOGWARN << "BETTER HIT! found! \n";
           smallestDistanceSoFar = distance;
           result = brick;
+          collisonPoint = nearestPoint;
         }
       }
     }
   }
-  return result;
+  return {result, collisonPoint};
 }
