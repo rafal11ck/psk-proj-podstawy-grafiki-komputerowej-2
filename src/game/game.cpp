@@ -34,10 +34,9 @@ glm::vec3 Game::mapBordersCollision() const {
 
 void Game::processBallMovement(const float dt) {
 
-  handleCollisions();
-
   glm::vec3 posChange{m_ballSpeed * glm::vec3{m_ballMovementVector}};
   m_ball->setPosition(m_ball->getPosition() + posChange);
+  handleCollisions();
 
   // LOGINFO << m_ball->getPosition().x << '\n';
 };
@@ -55,6 +54,11 @@ void Game::handleCollisions() {
   /// @TODO Handle pallete collision.
 }
 
+std::ostream &operator<<(std::ostream &os, glm::vec3 vec) {
+  os << "{" << vec.x << ", " << vec.y << ", " << vec.z << "}";
+  return os;
+}
+
 /// @TODO Handle brick collisons.
 void Game::handleBrickCollisions() {
   auto hitBrick{m_gameLevel->findCollidingBrick(*m_ball.get())};
@@ -65,19 +69,31 @@ void Game::handleBrickCollisions() {
     // point
     auto &p{hitBrick.second};
 
-    LOGWARN << "HIT! , WITH POINT = " << p.x << ' ' << p.y << ' ' << p.z
+    LOGWARN << "HIT! , WITH POINT = " << p
             << " DISTANCE = " << glm::distance(p, m_ball->getPosition())
             << '\n';
 
-    Game::performBallReflect(
-        glm::normalize(br.get().getPositonOrigin() - m_ball->getPosition()));
+    auto ballToCollisonPointVec{p - m_ball->getPosition()};
+    LOGINFO << "ballToPoint vector is" << ballToCollisonPointVec << '\n';
+    Game::performBallReflect(glm::normalize(ballToCollisonPointVec));
 
-    // Vector from ball to point.
-    auto ballVec{p - m_ball->getPosition()};
+    // normalize Vector so it's lentght is 1,
+    // then extend to size of ball radius.
+    auto revertVec{m_ball->getRadius() *
+                   glm::normalize(ballToCollisonPointVec)};
+
+    // m_ball->setPosition(m_ball->getPosition() + revertVec);
+    // LOGINFO << "MOVED BALL " << revertVec << "\n";
+
+    auto newBallPos{p - revertVec};
+
+    // Move ball to hit position, but not penetrated
+    m_ball->setPosition(newBallPos);
   }
 };
 
 void Game::setBallMovementVector(glm::vec3 vector) {
   m_ballMovementVector = vector;
 };
+
 void Game::setBallSpeed(float speed) { m_ballSpeed = speed; };

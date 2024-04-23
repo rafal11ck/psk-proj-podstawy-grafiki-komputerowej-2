@@ -43,6 +43,7 @@ void setupEngine() {
         }
       });
 
+  engine.setClearColor(glm::vec4{0, 0, 0, 1});
   engine.setProjectionType(Engine::ProjectionType::perspective);
 }
 
@@ -51,8 +52,8 @@ int main() {
 
   auto ball{std::make_shared<Ball>()};
 
-  auto gl{std::make_unique<GameLevel>(3, 5)};
-  gl->setBricksHeight(0.035f);
+  auto gl{std::make_unique<GameLevel>(4, 1)};
+  gl->setBricksHeight(0.1f);
 
   auto game{std::make_unique<Game>(ball)};
   game->setGameLevel(std::move(gl));
@@ -68,11 +69,10 @@ int main() {
     dt += engine.getLastFrameDuration().asSeconds();
 
     if (dt > 5) {
-      ball->setPosition(0.f, 0.f, 0.f);
-      game->setBallMovementVector(glm::normalize(glm::vec3{
-          static_cast<float>(rand()), static_cast<float>(rand() + 1), 0.f}));
+      ball->setPosition(0.0f, 0.35f, 0.f);
+      game->setBallMovementVector(glm::normalize(glm::vec3{0.f, 1.f, 0.f}));
       dt = 0;
-      game->setBallSpeed(0.01);
+      game->setBallSpeed(0.001);
     }
     if (state) {
       engine.moveMouseToCenterOfWindow();
