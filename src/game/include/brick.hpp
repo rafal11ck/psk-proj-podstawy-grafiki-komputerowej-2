@@ -1,6 +1,7 @@
 #ifndef BRICK_HPP_
 #define BRICK_HPP_
 
+#include "ball.hpp"
 #include "cube.hpp"
 #include "drawable.hpp"
 
@@ -13,19 +14,21 @@ class Brick : public Drawable {
   int m_maxDurability{1};
 
   /**
-   * @brief durability of brick
+   * @brief Durability of brick
    */
   int m_durability{m_maxDurability};
 
   /**
-   * @brief Weather it can have it's durability damaged.
+   * @brief Can it have it's durability decresed.
    * */
-  bool m_isImmuneToHits{false};
+  bool m_isDamageable{false};
 
   /**
-   * @brief Weather Ball can hit it.
+   * @brief Is brick on?
+   *
+   * If brick is not active it is not on the map.
    */
-  bool m_isHitable{true};
+  bool m_isActive{true};
 
   glm::vec3 m_size{0.1f, 0.1f, 1.f};
 
@@ -58,6 +61,33 @@ public:
   const glm::vec3 &getPositonOrigin() const;
 
   const glm::vec3 &getSize() const;
+  /**
+   * @brief Get durability of brick.
+   */
+  int getDurability() const;
+
+  /**
+   * @brief Enables Brick.
+   */
+  void enable() { m_isActive = true; }
+
+  /**
+   * @brief Disables Brick.
+   */
+  void disable() { m_isActive = false; }
+
+  /**
+   * @brief Query weahter Brick is active.
+   */
+  bool isEnabled() const;
+
+  /**
+   * @brief Weather collison with brick is possible.
+   *
+   * For brick to be colidable it has to be active and have durability grater
+   * than 0.
+   */
+  bool isCollidable() const;
 
 private:
   void updateModel();
