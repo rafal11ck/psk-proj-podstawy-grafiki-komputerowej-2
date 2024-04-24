@@ -59,7 +59,6 @@ std::ostream &operator<<(std::ostream &os, glm::vec3 vec) {
   return os;
 }
 
-/// @TODO Handle brick collisons.
 void Game::handleBrickCollisions() {
   auto hitBrick{m_gameLevel->findCollidingBrick(*m_ball.get())};
 
@@ -83,7 +82,9 @@ void Game::handleBrickCollisions() {
     // Move ball back as if it bounced off instead of penetrating.
     auto newBallPos{collisonPoint - revertVec};
 
+    // damage the brick
     brick.get().damage();
+    brick.get().disableIfHasNoDurability();
   }
 };
 

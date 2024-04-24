@@ -91,8 +91,18 @@ public:
   /**
    * @brief Damage brick
    * @param damage How much damage brick should take.
+   * @param autoDisable Should brick get automatically disabled if it's
+   * durability after hit is 0 or less.
    */
-  void damage(int damage = 1);
+  void damage(int damage = 1, bool autoDisable = false);
+
+  /**
+   * @brief Disable if it has no durability left
+   */
+  void disableIfHasNoDurability() {
+    if (m_durability <= 0)
+      disable();
+  }
 
 private:
   void updateModel();

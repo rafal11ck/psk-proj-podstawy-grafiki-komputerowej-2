@@ -145,7 +145,9 @@ GameLevel::findCollidingBrick(const Ball &ball) {
   // For each brick
   for (auto &brickRow : m_bricks) {
     for (Brick &brick : brickRow) {
-
+      // if brick is not collidable do not check
+      if (!brick.isCollidable())
+        continue;
       auto point{findCollisonPoint(ball, brick)};
       // If collison
       if (point.has_value()) {

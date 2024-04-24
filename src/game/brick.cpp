@@ -37,4 +37,4 @@ bool Brick::isEnabled() const { return m_isActive; }
 
 bool Brick::isCollidable() const { return (m_isActive && m_durability > 0); }
 
-void Brick::damage(int damage) { m_durability -= damage; }
+void Brick::damage(int damage, bool autoDisable) { m_durability -= damage; }
