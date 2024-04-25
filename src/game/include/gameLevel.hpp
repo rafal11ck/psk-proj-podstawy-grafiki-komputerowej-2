@@ -96,6 +96,6 @@ private:
                                              const Brick &brick) const;
 
   glm::vec3 findNearestPointOnContour(const Ball &ball,
-                                      const Brick &brick) const;
+                                      const Cube *brick) const;
 };
 #endif // GAMELEVEL_HPP_

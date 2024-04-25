@@ -107,6 +107,8 @@ public:
       disable();
   }
 
+  const Cube &getModel() const { return m_model; };
+
 private:
   void updateModel();
   void updateModelScale();
