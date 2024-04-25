@@ -1,5 +1,7 @@
 #include "engine.hpp"
 #include "game.hpp"
+#include "log.hpp"
+#include <filesystem>
 #include <memory>
 #include <random>
 
@@ -48,8 +50,16 @@ void setupEngine() {
   engine.setProjectionType(Engine::ProjectionType::perspective);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   setupEngine();
+
+  std::filesystem::path mainFilePath(argv[0]);
+  std::filesystem::current_path(mainFilePath.parent_path());
+
+  LOGINFO << "Working dir = " << std::filesystem::current_path() << '\n';
+
+  FileSystem::setResourcesPath(std::filesystem::current_path().string() +
+                               "/resources/");
 
   auto ball{std::make_shared<Ball>()};
 
