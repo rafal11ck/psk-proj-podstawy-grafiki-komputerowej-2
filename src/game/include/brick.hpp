@@ -33,7 +33,7 @@ class Brick : public Drawable {
 
   glm::vec3 m_positionOrigin;
 
-  Cube m_model{};
+  Cube m_model{Texture{Texture::TextureType::diffuse, "./resources/brick.png"}};
 
 public:
   Brick();
