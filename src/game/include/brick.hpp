@@ -53,8 +53,6 @@ public:
 
   void setIsImmuneTohits(bool immune);
 
-  void setPositionOrigin(glm::vec3 originPos);
-
   void setSize(glm::vec3 size) {
     m_size = size;
     updateModel();
@@ -62,7 +60,6 @@ public:
 
   const glm::vec3 &getPositonOrigin() const;
 
-  const glm::vec3 &getSize() const;
   /**
    * @brief Get durability of brick.
    */
@@ -107,7 +104,7 @@ public:
       disable();
   }
 
-  const Cube &getModel() const { return m_model; };
+  Cube &getModel() { return m_model; };
 
 private:
   void updateModel();

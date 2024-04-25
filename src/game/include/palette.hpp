@@ -2,7 +2,7 @@
 #define PALETTE_HPP_
 
 #include "brick.hpp"
-class Pallette : public Brick {
+class Pallette : public Cube {
 
 public:
   Pallette(const Pallette &) = delete;
@@ -11,8 +11,8 @@ public:
   Pallette &operator=(Pallette &&) = default;
 
   Pallette() {
-    setSize({0.3f, 0.08f, 1.f});
-    setPositionOrigin({0.f, -1.f + getSize().y / 2, 0.f});
+    setScale({0.3f, 0.08f, 1.f});
+    setPosition({0.f, -1.f + getScale().y / 2, 0.f});
   }
 };
 

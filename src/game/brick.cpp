@@ -20,14 +20,7 @@ void Brick::updateModel() {
 
 const glm::vec3 &Brick::getPositonOrigin() const { return m_positionOrigin; }
 
-const glm::vec3 &Brick::getSize() const { return m_size; };
-
 void Brick::setIsImmuneTohits(bool immune) { m_isDamageable = immune; }
-
-void Brick::setPositionOrigin(glm::vec3 originPos) {
-  m_positionOrigin = originPos;
-  updateModel();
-};
 
 void Brick::updateModelPosition() { m_model.setPosition(m_positionOrigin); };
 

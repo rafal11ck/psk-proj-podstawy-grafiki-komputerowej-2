@@ -93,9 +93,8 @@ private:
   float getBricksHorizontalSpace() const;
 
   std::optional<glm::vec3> findCollisonPoint(const Ball &ball,
-                                             const Brick &brick) const;
+                                             const Cube *cube) const;
 
-  glm::vec3 findNearestPointOnContour(const Ball &ball,
-                                      const Cube *brick) const;
+  glm::vec3 findNearestPointOnContour(const Ball &ball, const Cube *cube) const;
 };
 #endif // GAMELEVEL_HPP_

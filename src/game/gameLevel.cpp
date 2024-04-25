@@ -83,7 +83,7 @@ void GameLevel::setBrickPostions() {
         const auto pos{computeBrickPositionOrigin(col, row)};
         LOGINFO << "COL : " << col << " ROW" << row << " -> POS is ("
                 << pos.first << ", " << pos.second << ")" << '\n';
-        brick.setPositionOrigin({pos.first, pos.second, 0.f});
+        brick.getModel().setPosition({pos.first, pos.second, 0.f});
         ++col;
       }
     }
@@ -109,33 +109,6 @@ float GameLevel::getCollisionLinePositionRight() const {
   return (getBricksHorizontalSpace() / 2);
 };
 
-std::optional<glm::vec3>
-GameLevel::findCollisonPoint(const Ball &ball, const Brick &brick) const {
-  const glm::vec3 brickHalfExtent{0.5f * brick.getSize()};
-
-  auto diffVector{ball.getPosition() - brick.getPositonOrigin()};
-  // Raw distance from brick origin to ball origin.
-  const float rawDistance{glm::length(diffVector)};
-  // Farest raw distance of ball-brick origins for collision to be
-  // possible.
-  float checkingRange{glm::length(brickHalfExtent) + ball.getRadius()};
-  // Skip if not within checking range
-  if (rawDistance > checkingRange)
-    return {};
-
-  auto nearestPoint{findNearestPointOnContour(ball, &brick.getModel())};
-
-  float distance{glm::distance(nearestPoint, ball.getPosition())};
-
-  // If collision occurs
-  if (distance <= ball.getRadius()) {
-    // return point.
-    return nearestPoint;
-  }
-
-  return {};
-}
-
 const std::pair<std::optional<std::reference_wrapper<Brick>>, glm::vec3>
 GameLevel::findCollidingBrick(const Ball &ball) {
   auto result{std::make_pair(std::optional<std::reference_wrapper<Brick>>(),
@@ -148,10 +121,10 @@ GameLevel::findCollidingBrick(const Ball &ball) {
       // if brick is not collidable do not check
       if (!brick.isCollidable())
         continue;
-      auto point{findCollisonPoint(ball, brick)};
+      auto point{findCollisonPoint(ball, &brick.getModel())};
       // If collison
       if (point.has_value()) {
-        auto pointOfCollison{findCollisonPoint(ball, brick)};
+        auto pointOfCollison{findCollisonPoint(ball, &brick.getModel())};
         if (pointOfCollison.has_value()) {
           float distance{
               glm::distance(ball.getPosition(), pointOfCollison.value())};
@@ -165,6 +138,33 @@ GameLevel::findCollidingBrick(const Ball &ball) {
     }
   }
   return result;
+}
+
+std::optional<glm::vec3> GameLevel::findCollisonPoint(const Ball &ball,
+                                                      const Cube *cube) const {
+  const glm::vec3 brickHalfExtent{cube->getScale()};
+
+  auto diffVector{ball.getPosition() - cube->getPosition()};
+  // Raw distance from brick origin to ball origin.
+  const float rawDistance{glm::length(diffVector)};
+  // Farest raw distance of ball-brick origins for collision to be
+  // possible.
+  float checkingRange{glm::length(brickHalfExtent) + ball.getRadius()};
+  // Skip if not within checking range
+  if (rawDistance > checkingRange)
+    return {};
+
+  auto nearestPoint{findNearestPointOnContour(ball, cube)};
+
+  float distance{glm::distance(nearestPoint, ball.getPosition())};
+
+  // If collision occurs
+  if (distance <= ball.getRadius()) {
+    // return point.
+    return nearestPoint;
+  }
+
+  return {};
 }
 
 glm::vec3 GameLevel::findNearestPointOnContour(const Ball &ball,
