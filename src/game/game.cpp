@@ -1,14 +1,20 @@
 #include "game.hpp"
 #include "log.hpp"
 
-Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball){};
+Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball) {
+  m_palette.setScale(0.2, 0.05, 1.f);
+  m_palette.setPosition({0.f, -1.f + m_palette.getScale().y, 0.f});
+};
 
 void Game::draw(Shader &shader) {
   m_ball->draw(shader);
   m_gameLevel->draw(shader);
   m_palette.draw(shader);
 };
-void Game::update(const float dt) { processBallMovement(dt); };
+void Game::update(const float dt) {
+  processBallMovement(dt);
+  processPalleteMovement(dt);
+};
 
 glm::vec3 Game::mapBordersCollision() const {
   // Map border collsion right
@@ -34,7 +40,7 @@ glm::vec3 Game::mapBordersCollision() const {
 
 void Game::processBallMovement(const float dt) {
 
-  glm::vec3 posChange{m_ballSpeed * glm::vec3{m_ballMovementVector}};
+  glm::vec3 posChange{m_ballMovementSpeed * glm::vec3{m_ballMovementVector}};
   m_ball->setPosition(m_ball->getPosition() + posChange);
   handleCollisions();
 
@@ -89,7 +95,63 @@ void Game::handleBrickCollisions() {
 };
 
 void Game::setBallMovementVector(glm::vec3 vector) {
-  m_ballMovementVector = vector;
+  m_ballMovementVector = glm::normalize(vector);
 };
 
-void Game::setBallSpeed(float speed) { m_ballSpeed = speed; };
+void Game::setBallSpeed(float speed) { m_ballMovementSpeed = speed; };
+
+std::optional<glm::vec3> Game::getPalleteMovmentVector() const {
+  glm::vec3 vector{};
+  bool doesMove{false};
+
+  auto handleMovement{
+      [&](MovementDirection direction1, MovementDirection direction2) {
+        // if neither or both are moving cancel out.
+        if (isPalleteMoving(direction1) == isPalleteMoving(direction2)) {
+          return;
+        }
+
+        vector = vector + (isPalleteMoving(direction1) ? getVector(direction1)
+                                                       : getVector(direction2));
+        doesMove = true;
+      }};
+
+  handleMovement(MovementDirection::front, MovementDirection::back);
+  handleMovement(MovementDirection::left, MovementDirection::right);
+
+  if (doesMove)
+    return glm::normalize(vector);
+  else
+    return std::nullopt;
+}
+
+bool Game::isPalleteMoving(MovementDirection direction) const {
+  return m_palleteMoves[static_cast<ssize_t>(direction)];
+}
+
+void Game::setPalleteMovementState(MovementDirection movementDirection,
+                                   bool state) {
+  assert(movementDirection < MovementDirection::max_movementDirection);
+
+  m_palleteMoves[static_cast<ssize_t>(movementDirection)] = state;
+}
+
+void Game::processPalleteMovement(float dt) {
+  auto palleteMovementVec{getPalleteMovmentVector()};
+  // if does not move ignore.
+  if (!palleteMovementVec.has_value()) {
+    return;
+  }
+
+  LOGINFO << "Moving pallete by " << palleteMovementVec.value() << "\n";
+  auto moveVec{m_palletteMovementSpeed * dt * palleteMovementVec.value()};
+  auto postion{m_palette.getPosition() + moveVec};
+  postion = glm::clamp(
+      postion,
+      {m_gameLevel->getCollisonLinePositonLeft() + m_palette.getScale().x,
+       -1.f + m_palette.getScale().y, -1.f + m_palette.getScale().z},
+      {m_gameLevel->getCollisionLinePositionRight() - m_palette.getScale().x,
+       -1.f + m_palette.getScale().y, 1.f - m_palette.getScale().z});
+
+  m_palette.setPosition(postion);
+}

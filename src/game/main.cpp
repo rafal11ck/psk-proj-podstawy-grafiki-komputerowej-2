@@ -11,17 +11,11 @@ auto ball{std::make_shared<Ball>()};
 auto game{std::make_unique<Game>(ball)};
 
 void cameraContorolSwap();
-void keyEventHandler(const Engine::Event &event);
+void keyPressedEventHandler(const Engine::Event &event);
+void keyReleasedEventHandler(const Engine::Event &event);
+
 void loopFun();
-
-void changeDirToExecutableParentDir(std::string execFilePath) {
-  std::filesystem::path mainFilePath(execFilePath);
-  std::filesystem::current_path(mainFilePath.parent_path());
-  FileSystem::setResourcesPath(std::filesystem::current_path().string() +
-                               "/resources/");
-
-  LOGINFO << "Working dir = " << std::filesystem::current_path() << '\n';
-}
+void changeDirToExecutableParentDir(std::string execFilePath);
 
 int main(int argc, char *argv[]) {
   changeDirToExecutableParentDir(argv[0]);
@@ -33,11 +27,17 @@ int main(int argc, char *argv[]) {
   engine.addDrawable(game.get());
   engine.addLight(ball.get());
 
+  // Add light
+  auto light{std::make_unique<Light>()};
+  light->setAmbient(0.2f, 0.2f, 0.2f);
+  engine.addLight(light.get());
+
   // Loop function
   engine.setLoopFunction(loopFun);
 
   // Events
-  engine.setEventHandler(Engine::Event::KeyPressed, keyEventHandler);
+  engine.setEventHandler(Engine::Event::KeyPressed, keyPressedEventHandler);
+  engine.setEventHandler(Engine::Event::KeyReleased, keyReleasedEventHandler);
 
   engine.setClearColor(glm::vec4{0, 0, 0, 1});
   engine.setProjectionType(Engine::ProjectionType::perspective);
@@ -48,8 +48,17 @@ int main(int argc, char *argv[]) {
   engine.loop();
 }
 
+void changeDirToExecutableParentDir(std::string execFilePath) {
+  std::filesystem::path mainFilePath(execFilePath);
+  std::filesystem::current_path(mainFilePath.parent_path());
+  FileSystem::setResourcesPath(std::filesystem::current_path().string() +
+                               "/resources/");
+
+  LOGINFO << "Working dir = " << std::filesystem::current_path() << '\n';
+}
+
 void loopFun() {
-  game->processBallMovement(engine.getLastFrameDuration().asSeconds());
+  game->update(engine.getLastFrameDuration().asSeconds());
   static float dt{};
   dt += engine.getLastFrameDuration().asSeconds();
 
@@ -69,7 +78,7 @@ void loopFun() {
   }
 }
 
-void keyEventHandler(const Engine::Event &event) {
+void keyPressedEventHandler(const Engine::Event &event) {
   switch (event.key.code) {
   case sf::Keyboard::M:
     static bool modeWire{};
@@ -81,9 +90,40 @@ void keyEventHandler(const Engine::Event &event) {
     engine.setProjectionType(modeCam ? Engine::ProjectionType::orthogonal
                                      : Engine::ProjectionType::perspective);
     return;
-  case sf::Keyboard::K:
-    //   cameraContorolSwap();
+  case sf::Keyboard::W:
+    game->setPalleteMovementState(Game::MovementDirection::back, true);
+    return;
+  case sf::Keyboard::S:
+    game->setPalleteMovementState(Game::MovementDirection::front, true);
+    return;
+  case sf::Keyboard::A:
+    game->setPalleteMovementState(Game::MovementDirection::left, true);
+    return;
+  case sf::Keyboard::D:
+    game->setPalleteMovementState(Game::MovementDirection::right, true);
+    return;
   default:
     return;
+  }
+}
+
+void keyReleasedEventHandler(const Engine::Event &event) {
+  switch (event.key.code) {
+
+  case sf::Keyboard::W:
+    game->setPalleteMovementState(Game::MovementDirection::back, false);
+    return;
+  case sf::Keyboard::S:
+    game->setPalleteMovementState(Game::MovementDirection::front, false);
+    return;
+  case sf::Keyboard::A:
+    game->setPalleteMovementState(Game::MovementDirection::left, false);
+    return;
+  case sf::Keyboard::D:
+    game->setPalleteMovementState(Game::MovementDirection::right, false);
+    return;
+
+  default:
+    break;
   }
 }

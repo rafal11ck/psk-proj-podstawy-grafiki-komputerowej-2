@@ -3,6 +3,7 @@
 
 #include "ball.hpp"
 #include "gameLevel.hpp"
+#include "log.hpp"
 #include "palette.hpp"
 #include <memory>
 
@@ -15,20 +16,26 @@ public:
 
   Game(std::shared_ptr<Ball> ball);
 
+  /**
+   * @brief movementDirections
+   *
+   * @Note Should use default values as it is used for indicies.
+   */
+  enum class MovementDirection {
+    front,
+    back,
+    left,
+    right,
+    max_movementDirection
+  };
+
   void draw(Shader &shader) override;
 
   /**
    * @brief Process game logic
-   * @param dt Time.
+   * @param dt Time in seconds;
    */
   void update(const float dt);
-
-  /**
-   * @brief Process ball movement.
-   *
-   * @param dt Time.
-   */
-  void processBallMovement(const float dt);
 
   /**
    * @brief Set game level.
@@ -49,7 +56,60 @@ public:
 
   void setBallSpeed(float speed);
 
+  /**
+   * Wheather pallete moves in given direction.
+   */
+  void setPalleteMovementState(MovementDirection movementDirection, bool state);
+
+  /**
+   * @brief Get vector of movement in given direction.
+   * @param movementDirection direction of movement.
+   * @returns Normalized vector of movement direction
+   */
+  glm::vec3 getVector(MovementDirection movementDirection) const {
+    switch (movementDirection) {
+    case MovementDirection::front:
+      return {0.f, 0.f, 1.f};
+    case MovementDirection::back:
+      return {0.f, 0.f, -1.f};
+    case MovementDirection::left:
+      return {-1.f, 0.f, 0.f};
+    case MovementDirection::right:
+      return {1.f, 0.f, 0.f};
+    default:
+      LOGWARN << "Unhandled swtich value\n";
+      return {};
+    }
+  }
+
+  /**
+   * @brief Get movement vector of pallete.
+   * @returns Normalized movemnet vector of pallete if it moves.
+   */
+  std::optional<glm::vec3> getPalleteMovmentVector() const;
+
 private:
+  /**
+   * @brief Process ball movement.
+   *
+   * @param dt Time in seconds.
+   */
+  void processBallMovement(const float dt);
+
+  /**
+   * @brief Process pallete movement.
+   * @param dt Time in seconds.
+   */
+  void processPalleteMovement(float dt);
+
+  /**
+   * Check weather pallete should move in given driection.
+   *
+   * @Note Does not ceeck for canceling moves. As in moves left and right
+   * canceling each other but returns true for both;
+   */
+  bool isPalleteMoving(MovementDirection direction) const;
+
   void handleBrickCollisions();
 
   /**
@@ -89,9 +149,23 @@ private:
   Pallette m_palette{};
 
   /**
+   * @brief State of pallete movment.
+   *
+   * true if is moving in given direction
+   * MovementDirection indicates directions of movment
+   */
+  std::vector<bool> m_palleteMoves{std::vector<bool>(
+      static_cast<ssize_t>(MovementDirection::max_movementDirection), false)};
+
+  /**
    * @brief speed of ball.
    */
-  float m_ballSpeed{0.005};
+  float m_ballMovementSpeed{0.005};
+
+  /**
+   * @brief Speed of pallete
+   */
+  float m_palletteMovementSpeed{1};
 };
 
 #endif // GAME_HPP_
