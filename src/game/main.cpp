@@ -3,7 +3,6 @@
 #include "log.hpp"
 #include <filesystem>
 #include <memory>
-#include <random>
 
 Engine &engine{Engine::getInstance()};
 
@@ -26,6 +25,8 @@ int main(int argc, char *argv[]) {
   game->setGameLevel(std::move(gl));
   engine.addDrawable(game.get());
   engine.addLight(ball.get());
+  game->setBallMovementVector({0, -1.f, 0});
+  game->setBallSpeed(0.03);
 
   // Add light
   auto light{std::make_unique<Light>()};
@@ -60,22 +61,6 @@ void changeDirToExecutableParentDir(std::string execFilePath) {
 void loopFun() {
   game->update(engine.getLastFrameDuration().asSeconds());
   static float dt{};
-  dt += engine.getLastFrameDuration().asSeconds();
-
-  if (dt > 2.5) {
-    ball->setPosition(0.0f, 0.35f, 0.f);
-
-    static std::mt19937 generator{};
-
-    static std::uniform_real_distribution dis{-1.f, 1.f};
-
-    float x{dis(generator)};
-    float y{1.f + dis(generator)};
-
-    game->setBallMovementVector(glm::normalize(glm::vec3{x, y, 0.f}));
-    dt = 0;
-    game->setBallSpeed(0.02);
-  }
 }
 
 void keyPressedEventHandler(const Engine::Event &event) {

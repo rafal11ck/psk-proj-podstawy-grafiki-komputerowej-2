@@ -125,16 +125,13 @@ GameLevel::findCollidingBrick(const Ball &ball) {
       auto point{Collisiosns::findCollisonPoint(&ball, &brick.getModel())};
       // If collison
       if (point.has_value()) {
-        auto pointOfCollison{
-            Collisiosns::findCollisonPoint(&ball, &brick.getModel())};
-        if (pointOfCollison.has_value()) {
-          float distance{
-              glm::distance(ball.getPosition(), pointOfCollison.value())};
-          if (smallestDistanceSoFar > distance) {
-            smallestDistanceSoFar = distance;
-            result.first = brick;
-            result.second = pointOfCollison.value();
-          }
+        auto pointOfCollison{point};
+        float distance{
+            glm::distance(ball.getPosition(), pointOfCollison.value())};
+        if (smallestDistanceSoFar > distance) {
+          smallestDistanceSoFar = distance;
+          result.first = brick;
+          result.second = pointOfCollison.value();
         }
       }
     }

@@ -7,6 +7,9 @@
 
 class Collisiosns {
 public:
+  /**
+   * @brief Find point of clllioson if such exists.
+   */
   static std::optional<glm::vec3> findCollisonPoint(const Ball *ball,
                                                     const Cube *cube);
 

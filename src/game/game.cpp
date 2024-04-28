@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "collisions.hpp"
 #include "log.hpp"
 
 Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball) {
@@ -56,8 +57,7 @@ void Game::handleCollisions() {
   }
 
   handleBrickCollisions();
-
-  /// @TODO Handle pallete collision.
+  handlePalleteCollisons();
 }
 
 std::ostream &operator<<(std::ostream &os, glm::vec3 vec) {
@@ -156,4 +156,21 @@ void Game::processPalleteMovement(float dt) {
   m_palette.setPosition(postion);
 }
 
-void Game::handlePalleteCollisons() { Pallette &pallete{m_palette}; }
+void Game::handlePalleteCollisons() {
+  Pallette &pallete{m_palette};
+  auto colPoint{Collisiosns::findCollisonPoint(m_ball.get(), &pallete)};
+  // If collides
+  if (colPoint.has_value()) {
+    LOGINFO << "Pallete collision detected\n";
+    auto ballToCollisonPointVec{colPoint.value() - m_ball->getPosition()};
+
+    auto revertVec{m_ball->getRadius() *
+                   glm::normalize(ballToCollisonPointVec)};
+
+    // Outward vector from middle of cube to ball.
+    setBallMovementVector(m_ball->getPosition() - m_palette.getPosition());
+
+    // Move ball back as if it bounced off instead of penetrating.
+    auto newBallPos{colPoint.value() - revertVec};
+  }
+}
