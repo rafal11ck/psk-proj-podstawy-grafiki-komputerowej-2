@@ -10,8 +10,15 @@ FetchContent_MakeAvailable(engine)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources/
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources/)
 
-add_executable(main gameLevel.cpp main.cpp brick.cpp ball.cpp game.cpp
-                    fileSystem.cpp)
+add_executable(
+  main
+  gameLevel.cpp
+  main.cpp
+  brick.cpp
+  ball.cpp
+  game.cpp
+  fileSystem.cpp
+  collisions.cpp)
 
 add_custom_command(
   TARGET main

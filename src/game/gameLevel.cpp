@@ -1,4 +1,5 @@
 #include "gameLevel.hpp"
+#include "collisions.hpp"
 #include <log.hpp>
 
 std::pair<float, float> GameLevel::computeBrickPositionOrigin(int column,
@@ -121,10 +122,11 @@ GameLevel::findCollidingBrick(const Ball &ball) {
       // if brick is not collidable do not check
       if (!brick.isCollidable())
         continue;
-      auto point{findCollisonPoint(ball, &brick.getModel())};
+      auto point{Collisiosns::findCollisonPoint(&ball, &brick.getModel())};
       // If collison
       if (point.has_value()) {
-        auto pointOfCollison{findCollisonPoint(ball, &brick.getModel())};
+        auto pointOfCollison{
+            Collisiosns::findCollisonPoint(&ball, &brick.getModel())};
         if (pointOfCollison.has_value()) {
           float distance{
               glm::distance(ball.getPosition(), pointOfCollison.value())};
@@ -139,44 +141,3 @@ GameLevel::findCollidingBrick(const Ball &ball) {
   }
   return result;
 }
-
-std::optional<glm::vec3> GameLevel::findCollisonPoint(const Ball &ball,
-                                                      const Cube *cube) const {
-  const glm::vec3 brickHalfExtent{cube->getScale()};
-
-  auto diffVector{ball.getPosition() - cube->getPosition()};
-  // Raw distance from brick origin to ball origin.
-  const float rawDistance{glm::length(diffVector)};
-  // Farest raw distance of ball-brick origins for collision to be
-  // possible.
-  float checkingRange{glm::length(brickHalfExtent) + ball.getRadius()};
-  // Skip if not within checking range
-  if (rawDistance > checkingRange)
-    return {};
-
-  auto nearestPoint{findNearestPointOnContour(ball, cube)};
-
-  float distance{glm::distance(nearestPoint, ball.getPosition())};
-
-  // If collision occurs
-  if (distance <= ball.getRadius()) {
-    // return point.
-    return nearestPoint;
-  }
-
-  return {};
-}
-
-glm::vec3 GameLevel::findNearestPointOnContour(const Ball &ball,
-                                               const Cube *cube) const {
-  const glm::vec3 brickHalfExtent{cube->getScale()};
-
-  auto diffVector{ball.getPosition() - cube->getPosition()};
-  // Where is the closest point to the ball that is on the brick's surface
-  glm::vec3 clamped{glm::clamp(diffVector, -brickHalfExtent, brickHalfExtent)};
-
-  // Position of nearest point to the ball on the brick's surface.
-  glm::vec3 nearestPoint{cube->getPosition() + clamped};
-
-  return nearestPoint;
-};

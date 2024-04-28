@@ -124,6 +124,11 @@ private:
   }
 
   /**
+   * @brief Handles Ball collsios with pallete.
+   */
+  void handlePalleteCollisons();
+
+  /**
    * @brief Handle collisions why any objects.
    */
   void handleCollisions();

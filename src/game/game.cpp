@@ -155,3 +155,5 @@ void Game::processPalleteMovement(float dt) {
 
   m_palette.setPosition(postion);
 }
+
+void Game::handlePalleteCollisons() { Pallette &pallete{m_palette}; }
