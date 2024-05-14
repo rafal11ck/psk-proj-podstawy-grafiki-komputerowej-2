@@ -8,11 +8,14 @@ Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball) {
 };
 
 void Game::draw(Shader &shader) {
-  m_ball->draw(shader);
   m_gameLevel->draw(shader);
   m_palette.draw(shader);
+  m_scoreBar.draw(shader);
+  m_ball->draw(shader);
 };
 void Game::update(const float dt) {
+  if (isGameOver())
+    return;
   processBallMovement(dt);
   processPalleteMovement(dt);
 };
@@ -49,15 +52,14 @@ void Game::processBallMovement(const float dt) {
 };
 
 void Game::handleCollisions() {
+  handleBrickCollisions();
+  handlePalleteCollisons();
+
   // Handle border collison.
   auto borderColVec{mapBordersCollision()};
   if (glm::length(borderColVec) > 0) {
     performBallReflect(borderColVec);
-    return;
   }
-
-  handleBrickCollisions();
-  handlePalleteCollisons();
 }
 
 std::ostream &operator<<(std::ostream &os, glm::vec3 vec) {
@@ -76,21 +78,7 @@ void Game::handleBrickCollisions() {
     auto &collisonPoint{hitBrick.second};
 
     LOGINFO << "HIT at " << collisonPoint << '\n';
-    auto ballToCollisonPointVec{collisonPoint - m_ball->getPosition()};
-    Game::performBallReflect(glm::normalize(ballToCollisonPointVec));
-
-    // normalize Vector so it's lentght is 1,
-    // then extend to size of ball radius.
-    // This is relative positon from ball to coliision point.
-    auto revertVec{m_ball->getRadius() *
-                   glm::normalize(ballToCollisonPointVec)};
-
-    // Move ball back as if it bounced off instead of penetrating.
-    auto newBallPos{collisonPoint - revertVec};
-
-    // damage the brick
-    brick.get().damage();
-    brick.get().disableIfHasNoDurability();
+    resolveBrickCollison(brick.get(), collisonPoint);
   }
 };
 
@@ -174,3 +162,60 @@ void Game::handlePalleteCollisons() {
     auto newBallPos{colPoint.value() - revertVec};
   }
 }
+
+void Game::addScore(long points) { m_scoreBar.addScore(points); }
+
+void Game::performBallReflect(glm::vec3 normal) {
+  auto n{glm::normalize(normal)};
+  m_ballMovementVector = glm::reflect(m_ballMovementVector, normal);
+}
+
+void Game::resolveBrickCollison(Brick &brick, glm::vec3 collisonPoint) {
+  auto ballToCollisonPointVec{collisonPoint - m_ball->getPosition()};
+  Game::performBallReflect(glm::normalize(ballToCollisonPointVec));
+
+  // normalize Vector so it's lentght is 1,
+  // then extend to size of ball radius.
+  // This is relative positon from ball to coliision point.
+  auto revertVec{m_ball->getRadius() * glm::normalize(ballToCollisonPointVec)};
+
+  // Move ball back as if it bounced off instead of penetrating.
+  auto newBallPos{collisonPoint - revertVec};
+
+  // damage the brick
+  long dmgDone{brick.damage()};
+  brick.disableIfHasNoDurability();
+  // add score.
+  addScore(dmgDone * 10);
+}
+
+glm::vec3 Game::getVector(MovementDirection movementDirection) const {
+  switch (movementDirection) {
+  case MovementDirection::front:
+    return {0.f, 0.f, 1.f};
+  case MovementDirection::back:
+    return {0.f, 0.f, -1.f};
+  case MovementDirection::left:
+    return {-1.f, 0.f, 0.f};
+  case MovementDirection::right:
+    return {1.f, 0.f, 0.f};
+  default:
+    LOGWARN << "Unhandled swtich value\n";
+    return {};
+  }
+}
+
+bool Game::isBallOutOfMap() const {
+  if (m_ball->getPosition().y + m_ball->getScale().y < -1) {
+    return true;
+  }
+  return false;
+}
+
+bool Game::isGameOver() const {
+  if (m_gameLevel->allBricksDestroyed() || isBallOutOfMap()) {
+    std::cout << "Gg\n";
+    return true;
+  }
+  return false;
+};

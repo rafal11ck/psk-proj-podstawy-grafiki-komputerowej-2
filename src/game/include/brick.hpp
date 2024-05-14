@@ -90,18 +90,19 @@ public:
 
   /**
    * @brief Damage brick
-   * @param damage How much damage brick should take.
-   * @param autoDisable Should brick get automatically disabled if it's
-   * durability after hit is 0 or less.
+   * @param damage How much damage brick should take. It will take less damage
+   * if it's durability would go under 0;
+   * @return How much damage brick actually took.
    */
-  void damage(int damage = 1, bool autoDisable = false);
+  int damage(int damage = 1);
 
   /**
    * @brief Disable if it has no durability left
    */
   void disableIfHasNoDurability() {
-    if (m_durability <= 0)
+    if (m_durability <= 0) {
       disable();
+    }
   }
 
   Cube &getModel() { return m_model; };

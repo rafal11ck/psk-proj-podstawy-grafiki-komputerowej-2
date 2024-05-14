@@ -6,9 +6,21 @@ FetchContent_Declare(
   GIT_TAG main)
 FetchContent_MakeAvailable(engine)
 
+
+FetchContent_GetProperties(gl_text)
+if(NOT gl_text_POPULATED)
+    FetchContent_Populate(gl_text)
+    add_library(gl_text INTERFACE)
+    target_include_directories(gl_text INTERFACE ${gl_text_SOURCE_DIR})
+endif()
+
+
 # copy resurces
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources/
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources/)
+
+
+set(CMAKE_CXX_STANDARD_REQUIRED 23)
 
 add_executable(
   main
@@ -18,7 +30,9 @@ add_executable(
   ball.cpp
   game.cpp
   fileSystem.cpp
-  collisions.cpp)
+  collisions.cpp
+  scoreBar.cpp
+)
 
 add_custom_command(
   TARGET main
@@ -28,4 +42,4 @@ add_custom_command(
 
 target_include_directories(main PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 
-target_link_libraries(main engine)
+target_link_libraries(main engine gl_text)

@@ -42,6 +42,17 @@ public:
   const std::pair<std::optional<std::reference_wrapper<Brick>>, glm::vec3>
   findCollidingBrick(const Ball &);
 
+  bool allBricksDestroyed() const {
+    for (auto &bricks : m_bricks) {
+      for (auto &brick : bricks) {
+        if (brick.isEnabled() && brick.getDurability() > 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
 private:
   int m_bricksRowCount{2};
   int m_bricksColumnCount{3};

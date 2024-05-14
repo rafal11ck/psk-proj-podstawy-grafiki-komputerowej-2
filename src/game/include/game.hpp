@@ -3,8 +3,8 @@
 
 #include "ball.hpp"
 #include "gameLevel.hpp"
-#include "log.hpp"
 #include "palette.hpp"
+#include "scoreBar.hpp"
 #include <memory>
 
 class Game : public Drawable {
@@ -66,21 +66,7 @@ public:
    * @param movementDirection direction of movement.
    * @returns Normalized vector of movement direction
    */
-  glm::vec3 getVector(MovementDirection movementDirection) const {
-    switch (movementDirection) {
-    case MovementDirection::front:
-      return {0.f, 0.f, 1.f};
-    case MovementDirection::back:
-      return {0.f, 0.f, -1.f};
-    case MovementDirection::left:
-      return {-1.f, 0.f, 0.f};
-    case MovementDirection::right:
-      return {1.f, 0.f, 0.f};
-    default:
-      LOGWARN << "Unhandled swtich value\n";
-      return {};
-    }
-  }
+  glm::vec3 getVector(MovementDirection movementDirection) const;
 
   /**
    * @brief Get movement vector of pallete.
@@ -110,7 +96,17 @@ private:
    */
   bool isPalleteMoving(MovementDirection direction) const;
 
+  /**
+   * @brief Brick collisons
+   */
   void handleBrickCollisions();
+
+  /**
+   * @brief Resolve collison with Brick
+   * @param brick Brick hit.
+   * @param cllisonPoint Collison point.
+   */
+  void resolveBrickCollison(Brick &brick, glm::vec3 collisonPoint);
 
   /**
    * @brief Perform ball collision with surface
@@ -118,10 +114,7 @@ private:
    *
    * Changes m_ballMovementVector to reflect bounce.
    */
-  void performBallReflect(glm::vec3 normal) {
-    auto n{glm::normalize(normal)};
-    m_ballMovementVector = glm::reflect(m_ballMovementVector, normal);
-  }
+  void performBallReflect(glm::vec3 normal);
 
   /**
    * @brief Handles Ball collsios with pallete.
@@ -132,6 +125,18 @@ private:
    * @brief Handle collisions why any objects.
    */
   void handleCollisions();
+
+  void addScore(long points);
+
+  /**
+   * @brief check weather ball is out of map in a way player would lose.
+   */
+  bool isBallOutOfMap() const;
+
+  /**
+   * @brief Check weather game is done.
+   */
+  bool isGameOver() const;
 
   /**
    * @brief Ball in the game.
@@ -171,6 +176,8 @@ private:
    * @brief Speed of pallete
    */
   float m_palletteMovementSpeed{1};
+
+  ScoreBar m_scoreBar{};
 };
 
 #endif // GAME_HPP_
