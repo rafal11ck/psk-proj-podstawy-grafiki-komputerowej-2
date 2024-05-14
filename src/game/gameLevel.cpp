@@ -138,3 +138,5 @@ GameLevel::findCollidingBrick(const Ball &ball) {
   }
   return result;
 }
+
+void GameLevel::reset() { std::cout << "NOT IMPLEMENTED"; }

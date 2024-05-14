@@ -53,6 +53,8 @@ public:
     return true;
   }
 
+  void reset();
+
 private:
   int m_bricksRowCount{2};
   int m_bricksColumnCount{3};

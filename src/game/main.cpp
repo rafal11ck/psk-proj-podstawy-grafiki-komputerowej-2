@@ -4,6 +4,9 @@
 #include <filesystem>
 #include <memory>
 
+#define GLT_IMPLEMENTATION
+#include "gltext.h"
+
 Engine &engine{Engine::getInstance()};
 
 void cameraContorolSwap();
@@ -12,9 +15,13 @@ void keyReleasedEventHandler(const Engine::Event &event);
 
 void loopFun();
 void changeDirToExecutableParentDir(std::string execFilePath);
+void gameOverCheckAndHandle();
+void gameResetOnSpaceWithText();
+void loopFunGameWon();
+void handleGameResetOnSpace(std::weak_ptr<Game> ptr);
 
 auto ball{std::make_shared<Ball>()};
-auto game{std::make_unique<Game>(ball)};
+auto game{std::make_shared<Game>(ball)};
 
 int main(int argc, char *argv[]) {
   changeDirToExecutableParentDir(argv[0]);
@@ -23,10 +30,12 @@ int main(int argc, char *argv[]) {
   auto gl{std::make_unique<GameLevel>(5, 10)};
   gl->setBricksHeight(0.1f);
   game->setGameLevel(std::move(gl));
+
   engine.addDrawable(game.get());
   engine.addLight(ball.get());
-  game->setBallMovementVector({0, -1.f, 0});
-  game->setBallSpeed(0.025);
+
+  // game->setBallMovementVector({0, -1.f, 0});
+  // game->setBallSpeed(0.03);
   ball->setScale(0.75);
 
   // Add light
@@ -42,7 +51,7 @@ int main(int argc, char *argv[]) {
   engine.setEventHandler(Engine::Event::KeyReleased, keyReleasedEventHandler);
 
   engine.setClearColor(glm::vec4{0, 0, 0, 1});
-  engine.setProjectionType(Engine::ProjectionType::perspective);
+  engine.setProjectionType(Engine::ProjectionType::orthogonal);
 
   // move camera back initially
   engine.getCamera().processKeyboard(Camera::BACKWARD, 1.2);
@@ -61,6 +70,13 @@ void changeDirToExecutableParentDir(std::string execFilePath) {
 
 void loopFun() {
   game->update(engine.getLastFrameDuration().asSeconds());
+  if (game->playerLost()) {
+    gameResetOnSpaceWithText();
+  } else if (game->playerWon()) {
+    std::cout << "Player is chad\n";
+    loopFunGameWon();
+  }
+
   static float dt{};
 }
 
@@ -88,6 +104,9 @@ void keyPressedEventHandler(const Engine::Event &event) {
   case sf::Keyboard::D:
     game->setPalleteMovementState(Game::MovementDirection::right, true);
     return;
+  case sf::Keyboard::Space:
+    handleGameResetOnSpace(game);
+    return;
   default:
     return;
   }
@@ -112,4 +131,30 @@ void keyReleasedEventHandler(const Engine::Event &event) {
   default:
     break;
   }
+}
+
+void gameResetOnSpaceWithText() {
+  gltInit();
+  GLTtext *text = gltCreateText();
+  gltBeginDraw();
+  std::string score{"PRESS SPACE TO RESTART"};
+
+  gltSetText(text, score.c_str());
+  // YES hardcoded color
+  gltColor(1.0f, 1.0f, 1.0f, 1.0f);
+  auto size{Engine::getInstance().getWindow().getSize()};
+  // Yes hardcodec postion
+  gltDrawText2DAligned(text, size.x / 2.0, size.y / 2.0, 3, GLT_CENTER,
+                       GLT_CENTER);
+
+  gltDeleteText(text);
+  gltEndDraw();
+  gltTerminate();
+};
+
+void loopFunGameWon(){};
+
+void handleGameResetOnSpace(std::weak_ptr<Game> ptr) {
+  auto game{ptr.lock()};
+  game->reset();
 }

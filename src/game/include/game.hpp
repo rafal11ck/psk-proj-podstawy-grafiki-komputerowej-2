@@ -50,7 +50,7 @@ public:
    *
    * @return Normal vector of hit surface or {0,0,0};
    */
-  glm::vec3 mapBordersCollision() const;
+  [[nodiscard]] glm::vec3 mapBordersCollision() const;
 
   void setBallMovementVector(glm::vec3 vector);
 
@@ -66,13 +66,28 @@ public:
    * @param movementDirection direction of movement.
    * @returns Normalized vector of movement direction
    */
-  glm::vec3 getVector(MovementDirection movementDirection) const;
+  [[nodiscard]] glm::vec3 getVector(MovementDirection movementDirection) const;
 
   /**
    * @brief Get movement vector of pallete.
    * @returns Normalized movemnet vector of pallete if it moves.
    */
-  std::optional<glm::vec3> getPalleteMovmentVector() const;
+  [[nodiscard]] std::optional<glm::vec3> getPalleteMovmentVector() const;
+
+  /**
+   * @brief Check weather game is done.
+   */
+  [[nodiscard("It's useless to call it without processing output")]] bool
+  isGameOver() const;
+
+  [[nodiscard]] bool playerLost();
+
+  [[nodiscard]] bool playerWon();
+
+  void reset() {
+    m_gameLevel->reset();
+    moveBallAbovePallete(m_ball.get());
+  }
 
 private:
   /**
@@ -134,11 +149,6 @@ private:
   bool isBallOutOfMap() const;
 
   /**
-   * @brief Check weather game is done.
-   */
-  bool isGameOver() const;
-
-  /**
    * @brief moves given ball above pallete
    */
   void moveBallAbovePallete(Ball *ball);
@@ -150,7 +160,7 @@ private:
   /**
    * @brief Normalized ballMovementVector
    */
-  glm::vec3 m_ballMovementVector{glm::vec3{1.f, 0.1f, 0.f}};
+  glm::vec3 m_ballMovementVector{glm::vec3{0.f, -1.0f, 0.f}};
 
   /**
    * @brief Game level in the game.
@@ -174,7 +184,7 @@ private:
   /**
    * @brief speed of ball.
    */
-  float m_ballMovementSpeed{0.005};
+  float m_ballMovementSpeed{0.025};
 
   /**
    * @brief Speed of pallete
