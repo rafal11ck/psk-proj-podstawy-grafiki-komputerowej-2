@@ -5,6 +5,7 @@
 Game::Game(std::shared_ptr<Ball> ball) : m_ball(ball) {
   m_palette.setScale(0.2, 0.05, 1.f);
   m_palette.setPosition({0.f, -1.f + m_palette.getScale().y, 0.f});
+  moveBallAbovePallete(m_ball.get());
 };
 
 void Game::draw(Shader &shader) {
@@ -219,3 +220,9 @@ bool Game::isGameOver() const {
   }
   return false;
 };
+
+void Game::moveBallAbovePallete(Ball *ball) {
+  ball->setPosition(
+      m_palette.getPosition() +
+      glm::vec3{0.0, ball->getScale().y + m_palette.getScale().y, 0.0});
+}

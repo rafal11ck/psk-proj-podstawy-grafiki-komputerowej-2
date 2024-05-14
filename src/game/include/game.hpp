@@ -139,6 +139,10 @@ private:
   bool isGameOver() const;
 
   /**
+   * @brief moves given ball above pallete
+   */
+  void moveBallAbovePallete(Ball *ball);
+  /**
    * @brief Ball in the game.
    */
   std::shared_ptr<Ball> m_ball;
