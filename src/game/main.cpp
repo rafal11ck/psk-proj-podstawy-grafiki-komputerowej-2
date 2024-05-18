@@ -9,16 +9,14 @@
 
 Engine &engine{Engine::getInstance()};
 
-void cameraContorolSwap();
 void keyPressedEventHandler(const Engine::Event &event);
 void keyReleasedEventHandler(const Engine::Event &event);
 
 void loopFun();
 void changeDirToExecutableParentDir(std::string execFilePath);
 void gameOverCheckAndHandle();
-void gameResetOnSpaceWithText();
-void loopFunGameWon();
-void handleGameResetOnSpace(std::weak_ptr<Game> ptr);
+void gameResetOnSpaceText();
+void gameReset(std::weak_ptr<Game> ptr);
 
 auto ball{std::make_shared<Ball>()};
 auto game{std::make_shared<Game>(ball)};
@@ -27,7 +25,7 @@ int main(int argc, char *argv[]) {
   changeDirToExecutableParentDir(argv[0]);
 
   // Initialzie game
-  auto gl{std::make_unique<GameLevel>(5, 10)};
+  auto gl{std::make_unique<GameLevel>(2, 1)};
   gl->setBricksHeight(0.1f);
   game->setGameLevel(std::move(gl));
 
@@ -51,10 +49,10 @@ int main(int argc, char *argv[]) {
   engine.setEventHandler(Engine::Event::KeyReleased, keyReleasedEventHandler);
 
   engine.setClearColor(glm::vec4{0, 0, 0, 1});
-  engine.setProjectionType(Engine::ProjectionType::orthogonal);
+  engine.setProjectionType(Engine::ProjectionType::perspective);
 
   // move camera back initially
-  engine.getCamera().processKeyboard(Camera::BACKWARD, 1.2);
+  engine.getCamera().processKeyboard(Camera::BACKWARD, 1.4);
 
   engine.loop();
 }
@@ -70,11 +68,10 @@ void changeDirToExecutableParentDir(std::string execFilePath) {
 
 void loopFun() {
   game->update(engine.getLastFrameDuration().asSeconds());
-  if (game->playerLost()) {
-    gameResetOnSpaceWithText();
-  } else if (game->playerWon()) {
-    std::cout << "Player is chad\n";
-    loopFunGameWon();
+  // if reset is thing that should happen next
+  if (game->isGameOver()) {
+    // display text
+    gameResetOnSpaceText();
   }
 
   static float dt{};
@@ -104,8 +101,9 @@ void keyPressedEventHandler(const Engine::Event &event) {
   case sf::Keyboard::D:
     game->setPalleteMovementState(Game::MovementDirection::right, true);
     return;
+    // on space reset game
   case sf::Keyboard::Space:
-    handleGameResetOnSpace(game);
+    gameReset(game);
     return;
   default:
     return;
@@ -127,13 +125,12 @@ void keyReleasedEventHandler(const Engine::Event &event) {
   case sf::Keyboard::D:
     game->setPalleteMovementState(Game::MovementDirection::right, false);
     return;
-
   default:
     break;
   }
 }
 
-void gameResetOnSpaceWithText() {
+void gameResetOnSpaceText() {
   gltInit();
   GLTtext *text = gltCreateText();
   gltBeginDraw();
@@ -143,7 +140,7 @@ void gameResetOnSpaceWithText() {
   // YES hardcoded color
   gltColor(1.0f, 1.0f, 1.0f, 1.0f);
   auto size{Engine::getInstance().getWindow().getSize()};
-  // Yes hardcodec postion
+  // Yes hardcoded postion
   gltDrawText2DAligned(text, size.x / 2.0, size.y / 2.0, 3, GLT_CENTER,
                        GLT_CENTER);
 
@@ -152,9 +149,9 @@ void gameResetOnSpaceWithText() {
   gltTerminate();
 };
 
-void loopFunGameWon(){};
-
-void handleGameResetOnSpace(std::weak_ptr<Game> ptr) {
+void gameReset(std::weak_ptr<Game> ptr) {
   auto game{ptr.lock()};
-  game->reset();
+  // Only reset game if it's game over
+  if (game->isGameOver())
+    game->reset();
 }

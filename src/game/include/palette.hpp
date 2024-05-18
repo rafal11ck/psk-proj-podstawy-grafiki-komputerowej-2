@@ -11,7 +11,7 @@ public:
   Pallette &operator=(const Pallette &) = delete;
   Pallette &operator=(Pallette &&) = default;
 
-  Pallette() {}
+  Pallette() = default;
 };
 
 #endif // PALETTE_HPP_

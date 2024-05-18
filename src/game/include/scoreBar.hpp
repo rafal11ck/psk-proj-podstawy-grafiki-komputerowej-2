@@ -14,7 +14,17 @@ public:
   ScoreBar &operator=(ScoreBar &&) = default;
 
   void draw(Shader &shader) override;
+
+  /**
+   * @brief Add score.
+   * @param points Ammount of poitnts to add.
+   */
   void addScore(long points);
+
+  /**
+   * @brief Reset score counter.
+   */
+  void reset();
 
   ~ScoreBar() = default;
 };

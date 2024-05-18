@@ -39,3 +39,26 @@ int Brick::damage(int damage) {
     return damage;
   }
 }
+void Brick::disableIfHasNoDurability() {
+  if (m_durability <= 0) {
+    disable();
+  }
+}
+
+Cube &Brick::getModel() { return m_model; };
+
+Brick::Brick(Cube m_model) : m_model(std::move(m_model)) {}
+
+void Brick::disable() { m_isActive = false; }
+
+void Brick::enable() { m_isActive = true; }
+
+void Brick::setSize(glm::vec3 size) {
+  m_size = size;
+  updateModel();
+}
+
+void Brick::reset() {
+  m_durability = m_maxDurability;
+  m_isActive = m_isActiveDefaultState;
+}

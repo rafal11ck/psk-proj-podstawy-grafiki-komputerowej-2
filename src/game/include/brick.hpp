@@ -24,11 +24,18 @@ class Brick : public Drawable {
   bool m_isDamageable{false};
 
   /**
+   * @biref default state of m_isActive.
+   *
+   * @note Needed for reset.
+   */
+  const bool m_isActiveDefaultState{true};
+
+  /**
    * @brief Is brick on?
    *
    * If brick is not active it is not on the map.
    */
-  bool m_isActive{true};
+  bool m_isActive{m_isActiveDefaultState};
 
   Cube m_model{Texture{Texture::TextureType::diffuse,
                        FileSystem::getResourcesPath() + "/brick.png"}};
@@ -39,13 +46,14 @@ class Brick : public Drawable {
 
 public:
   Brick();
-  explicit Brick(Cube m_model) : m_model(std::move(m_model)) {}
+  explicit Brick(Cube m_model);
   ~Brick();
 
   Brick(const Brick &) = delete;
   Brick(Brick &&) = default;
   Brick &operator=(const Brick &) = delete;
   Brick &operator=(Brick &&) = default;
+
   /**
    * @brief Draw the object.
    */
@@ -53,10 +61,7 @@ public:
 
   void setIsImmuneTohits(bool immune);
 
-  void setSize(glm::vec3 size) {
-    m_size = size;
-    updateModel();
-  }
+  void setSize(glm::vec3 size);
 
   const glm::vec3 &getPositonOrigin() const;
 
@@ -68,12 +73,12 @@ public:
   /**
    * @brief Enables Brick.
    */
-  void enable() { m_isActive = true; }
+  void enable();
 
   /**
    * @brief Disables Brick.
    */
-  void disable() { m_isActive = false; }
+  void disable();
 
   /**
    * @brief Query weahter Brick is active.
@@ -99,13 +104,17 @@ public:
   /**
    * @brief Disable if it has no durability left
    */
-  void disableIfHasNoDurability() {
-    if (m_durability <= 0) {
-      disable();
-    }
-  }
+  void disableIfHasNoDurability();
 
-  Cube &getModel() { return m_model; };
+  [[deprecated("Bad prattice getter to implemetation details breaks isolation "
+               "priciple, rquireres "
+               "rewrite")]] Cube &
+  getModel();
+
+  /**
+   * @brief Reset durability of brick to it's max durability
+   */
+  void reset();
 
 private:
   void updateModel();

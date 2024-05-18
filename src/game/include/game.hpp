@@ -80,11 +80,20 @@ public:
   [[nodiscard("It's useless to call it without processing output")]] bool
   isGameOver() const;
 
+  /**
+   * @brief Check weather player lost.
+   */
   [[nodiscard]] bool playerLost();
 
+  /**
+   * @brief Check weather player won.
+   */
   [[nodiscard]] bool playerWon();
 
   void reset() {
+    if (playerLost()) {
+      m_scoreBar.reset();
+    }
     m_gameLevel->reset();
     moveBallAbovePallete(m_ball.get());
   }

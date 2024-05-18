@@ -209,7 +209,8 @@ glm::vec3 Game::getVector(MovementDirection movementDirection) const {
 }
 
 bool Game::isBallOutOfMap() const {
-  if (m_ball->getPosition().y + m_ball->getScale().y < -1) {
+  constexpr double bottomOfmapHeigh{-1.0};
+  if (m_ball->getPosition().y + m_ball->getRadius() < bottomOfmapHeigh) {
     return true;
   }
   return false;
@@ -217,16 +218,15 @@ bool Game::isBallOutOfMap() const {
 
 bool Game::isGameOver() const {
   if (m_gameLevel->allBricksDestroyed() || isBallOutOfMap()) {
-    std::cout << "Gg\n";
     return true;
   }
   return false;
 };
 
 void Game::moveBallAbovePallete(Ball *ball) {
-  ball->setPosition(
-      m_palette.getPosition() +
-      glm::vec3{0.0, ball->getScale().y + m_palette.getScale().y, 0.0});
+  const double yoffset{m_palette.getScale().y + ball->getRadius()};
+
+  ball->setPosition(m_palette.getPosition() + glm::vec3{0.0, yoffset, 0.0});
 }
 
 bool Game::playerLost() { return isBallOutOfMap(); }
