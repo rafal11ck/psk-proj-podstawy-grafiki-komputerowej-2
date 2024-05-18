@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   changeDirToExecutableParentDir(argv[0]);
 
   // Initialzie game
-  auto gl{std::make_unique<GameLevel>(2, 1)};
+  auto gl{std::make_unique<GameLevel>(6, 10)};
   gl->setBricksHeight(0.1f);
   game->setGameLevel(std::move(gl));
 
