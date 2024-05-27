@@ -4,9 +4,8 @@
 
 ## Showcase
 
-<video>
-	<source src="./docs/img/gp.mp4" type="video/mp4">
-</video>
+![video docs/img/gp.mp4](https://git.cursedman.xyz/rafal/psk-proj-podstawy-grafiki-komputerowej-2/raw/branch/main/docs/img/gp.mp4)
+
 
 # How to play?
 
