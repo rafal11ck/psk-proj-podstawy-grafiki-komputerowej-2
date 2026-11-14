@@ -9,7 +9,10 @@
 
 # How to play?
 
+`nix run github:rafal11ck/psk-proj-podstawy-grafiki-komputerowej-2`
+
 - Compile & run game target (found in build/src). 
+
 
 ## Controls
 
