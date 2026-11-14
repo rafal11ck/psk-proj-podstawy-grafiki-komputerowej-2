@@ -1,0 +1,61 @@
+{
+  "nodes": {
+    "engine": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1794645711,
+        "narHash": "sha256-SNTJsO8TvaVFmTj+HoiDrYLA3VfeQhQLjluKEAXEN3I=",
+        "owner": "rafal11ck",
+        "repo": "opengl-3d-engine",
+        "rev": "f2828150f0004395df2b57a5e7b4ac6b1d20f90e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rafal11ck",
+        "repo": "opengl-3d-engine",
+        "type": "github"
+      }
+    },
+    "glText": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1593720803,
+        "narHash": "sha256-0g3me4FghuN394Jq/zF0VT1DKBJcamPQtz9WBffAEkc=",
+        "owner": "vallentin",
+        "repo": "glText",
+        "rev": "8200fa70e32acec0a3cd777d404f41ee0c203ca4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vallentin",
+        "repo": "glText",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1794386569,
+        "narHash": "sha256-x9sADJvoVG0L6RejZB+/BB4YiGZFBZrfTlhF4uBq1tQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d4f25a3e562008648d45bcf2d70bcc7422cad84e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "engine": "engine",
+        "glText": "glText",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
