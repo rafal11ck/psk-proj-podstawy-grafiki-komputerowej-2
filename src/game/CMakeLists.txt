@@ -1,26 +1,21 @@
 include(FetchContent)
 
+# Header-only text rendering library.
+FetchContent_Declare(
+  gl_text
+  GIT_REPOSITORY https://github.com/vallentin/glText.git
+  GIT_TAG master)
+FetchContent_MakeAvailable(gl_text)
+add_library(gl_text INTERFACE)
+target_include_directories(gl_text INTERFACE ${gl_text_SOURCE_DIR})
+
+# EXCLUDE_FROM_ALL: build only what the game needs.
 FetchContent_Declare(
   engine
   GIT_REPOSITORY https://github.com/rafal11ck/opengl-3d-engine.git
-  GIT_TAG main)
+  GIT_TAG main
+  EXCLUDE_FROM_ALL)
 FetchContent_MakeAvailable(engine)
-
-
-FetchContent_GetProperties(gl_text)
-if(NOT gl_text_POPULATED)
-    FetchContent_Populate(gl_text)
-    add_library(gl_text INTERFACE)
-    target_include_directories(gl_text INTERFACE ${gl_text_SOURCE_DIR})
-endif()
-
-
-# copy resurces
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources/
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources/)
-
-
-set(CMAKE_CXX_STANDARD_REQUIRED 23)
 
 add_executable(
   main
@@ -29,17 +24,11 @@ add_executable(
   brick.cpp
   ball.cpp
   game.cpp
-  fileSystem.cpp
   collisions.cpp
   scoreBar.cpp
 )
 
-add_custom_command(
-  TARGET main
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory
-          ${CMAKE_CURRENT_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:main>)
+target_include_directories(main PRIVATE include)
+target_link_libraries(main PRIVATE engine gl_text)
 
-target_include_directories(main PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
-
-target_link_libraries(main engine gl_text)
+install(TARGETS main)

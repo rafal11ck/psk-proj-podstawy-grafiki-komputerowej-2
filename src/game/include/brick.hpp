@@ -3,7 +3,6 @@
 
 #include "cube.hpp"
 #include "drawable.hpp"
-#include "fileSystem.hpp"
 
 class GameLevel;
 
@@ -37,8 +36,11 @@ class Brick : public Drawable {
    */
   bool m_isActive{m_isActiveDefaultState};
 
-  Cube m_model{Texture{Texture::TextureType::diffuse,
-                       FileSystem::getResourcesPath() + "/brick.png"}};
+  static constexpr unsigned char s_texture[] = {
+#embed "../resources/brick.png"
+  };
+
+  Cube m_model{Texture{Texture::TextureType::diffuse, s_texture}};
 
   glm::vec3 m_positionOrigin{};
 

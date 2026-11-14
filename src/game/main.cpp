@@ -1,7 +1,6 @@
 #include "engine.hpp"
 #include "game.hpp"
 #include "log.hpp"
-#include <filesystem>
 #include <memory>
 
 #define GLT_IMPLEMENTATION
@@ -13,7 +12,6 @@ void keyPressedEventHandler(const Engine::Event &event);
 void keyReleasedEventHandler(const Engine::Event &event);
 
 void loopFun();
-void changeDirToExecutableParentDir(std::string execFilePath);
 void gameOverCheckAndHandle();
 void gameResetOnSpaceText();
 void gameReset(std::weak_ptr<Game> ptr);
@@ -22,7 +20,6 @@ auto ball{std::make_shared<Ball>()};
 auto game{std::make_shared<Game>(ball)};
 
 int main(int argc, char *argv[]) {
-  changeDirToExecutableParentDir(argv[0]);
 
   // Initialzie game
   auto gl{std::make_unique<GameLevel>(6, 10)};
@@ -55,15 +52,6 @@ int main(int argc, char *argv[]) {
   engine.getCamera().processKeyboard(Camera::BACKWARD, 1.4);
 
   engine.loop();
-}
-
-void changeDirToExecutableParentDir(std::string execFilePath) {
-  std::filesystem::path mainFilePath(execFilePath);
-  std::filesystem::current_path(mainFilePath.parent_path());
-  FileSystem::setResourcesPath(std::filesystem::current_path().string() +
-                               "/resources/");
-
-  LOGINFO << "Working dir = " << std::filesystem::current_path() << '\n';
 }
 
 void loopFun() {
